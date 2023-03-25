@@ -53,14 +53,11 @@ def logout_request(request):
 def register_request(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
-        print("Errors?")
         if form.is_valid():
-            print("NO")
             user = form.save()
             user.save()
 
             return redirect('login')
-        print("YES")
     else:
         form = RegisterForm()
     return render(request, 'accounts/register.html', context={'form': form})

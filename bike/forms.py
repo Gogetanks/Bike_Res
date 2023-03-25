@@ -14,8 +14,6 @@ class LoginForm(forms.Form):
 
         user = authenticate(username=username_or_email, password=password)
         if not user:
-            print(username_or_email)
-            print(password)
             user = authenticate(email=username_or_email, password=password)
             if not user:
                 raise forms.ValidationError('Credentials are incorrect.')
@@ -50,3 +48,5 @@ class RegisterForm(UserCreationForm):
         if User.objects.filter(email=email).exists():
             raise ValidationError(f"Email {email} is already in use.")
 
+    def clean_password2(self):
+        pass
