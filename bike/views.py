@@ -63,3 +63,8 @@ def register_request(request):
         form = RegisterForm()
 
     return render(request, 'accounts/register.html', context={'form': form})
+
+
+
+def bikes(request):
+    return HttpResponse("Bikes")
