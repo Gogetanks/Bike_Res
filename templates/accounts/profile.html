@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block content %}
+	<table class="standard-table" id="profile-table">
+		<tr>
+			<th colspan="2">My profile</th>
+		</tr>
+		<tr>
+			<td>Username:</td>
+			<td>{{ user.username }}</td>
+		</tr>
+		<tr>
+			<td>Email:</td>
+			<td>{{ user.email }}</td>
+		</tr>
+		<tr>
+			<th colspan="2">
+				<div><a href="{% url 'home' %}">Log Out</a></div>
+			</th>
+		</tr>
+	</table>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block content %}
+	<div id="form-div">
+		<h3>{% block form-title %}{% endblock %}</h3>
+		<form method="post">
+			{% csrf_token %}
+			<table>
+				<tr>
+					<td colspan="2">{{ form.non_field_errors }}</td>
+				</tr>
+				{% for field in form %}
+					<tr>
+						<td>{{ field.label_tag }}</td>
+						<td>{{ field }}</td>
+					</tr>
+				{% endfor %}
+				<tr>
+					<td colspan="2"><input type="submit" value={% block submit-value %}{% endblock %}></td>
+				</tr>
+			</table>
+		</form>
+		{% block form-extra %}{% endblock %}
+	</div>
+{% endblock %}
