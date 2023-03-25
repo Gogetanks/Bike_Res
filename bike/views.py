@@ -5,6 +5,7 @@ from django.contrib import messages
 from .forms import LoginForm, RegisterForm
 from .models import User
 
+
 # ---- #
 # HOME #
 # ---- #
@@ -67,3 +68,7 @@ def register_request(request):
 
 def bikes(request):
     return HttpResponse("Bikes")
+
+
+def about(request):
+    return render(request, 'about_us.html')
