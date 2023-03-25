@@ -9,7 +9,7 @@ from .models import User
 # HOME #
 # ---- #
 def home_request(request):
-    return HttpResponse("Hello, world!")
+    return render(request, 'base.html')
 
 
 # ------- #
@@ -48,6 +48,7 @@ def logout_request(request):
     messages.success(request, "You have successfully logged out.")
     return redirect('home')
 
+
 def register_request(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
@@ -61,9 +62,7 @@ def register_request(request):
         print("YES")
     else:
         form = RegisterForm()
-
     return render(request, 'accounts/register.html', context={'form': form})
-
 
 
 def bikes(request):
