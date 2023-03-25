@@ -5,11 +5,39 @@
 	<head>
 		<meta charset="utf-8">
 		<title>B.I.K.E</title>
+		<link rel="stylesheet" href="{% static 'css/base.css' %}">
 		{% block head %}{% endblock %}
 	</head>
 	<body>
-		{% block content %}
-			Working on it...
-		{% endblock %}
+		<div class="header">
+			<h1 class="logo">B.I.K.E</h1>
+			{% if user.is_authenticated %}
+			<a id="logout_button" class="headerbutton" href="{% url 'logout' %}" data-role="button">log out</a>
+			{% else %}
+				{% if request.resolver_match.url_name == 'register' or request.resolver_match.url_name == 'login' %}
+				{% else %}
+				<a id="register_button" class="headerbutton" href="{% url 'register' %}" data-role="button">sign up</a>
+				<a id="login_button" class="headerbutton" href="{% url 'login' %}" data-role="button">log in</a>
+				{% endif %}
+			{% endif %}
+		</div>
+		<hr />
+		<ul class="navi">
+			<li><a href="{% url 'home' %}"
+				class="{% if request.resolver_match.url_name == 'home' %}active{% else %}none{% endif %}">
+				Home
+			</a></li>
+			<li><a href="{% url 'about' %}"
+				class="{% if request.resolver_match.url_name == 'about' %}active{% else %}none{% endif %}">
+				About Us
+			</a></li>
+			<!--Create simmilar navigation bar items when adding new page templates-->
+			<li><a href="#">Dummy1</a></li>
+			<li><a href="#">Dummy2</a></li>
+		</ul>
+		<div class="content">
+			{% block content %}
+			{% endblock %}
+		</div>
 	</body>
 </html>

@@ -1,0 +1,114 @@
+
+
+html,body
+{
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+    overflow-x: hidden; 
+}
+
+.header {
+    position: sticky;
+    top: 0;
+    z-index: 999;
+    background-color: white;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    width: 100%;
+    height: 60px;
+}
+
+.logo {
+    color: dodgerblue;
+    font-size: 27px;
+    font-family: verdana;
+    text-align: left;
+    padding-top: 8px;
+    float: left;
+    margin: 0px;
+    line-height: 50px;
+    padding-left: 9px;
+}
+
+.headerbutton {
+    float: right;
+    margin-top: 7px;
+    margin-right: 5px !important;
+    border-radius: 20px;
+    background-color: dodgerblue;
+    
+    padding: 18px;
+    width: auto;
+    height: auto;
+    color: white;
+    font-weight: bolder;
+    text-decoration: none;
+}
+
+
+
+
+ul.navi {
+    list-style-type: none;
+    margin-top: -9px !important;
+    margin: 0;
+    padding: 0;
+    width: 150px;
+    background-color: #f1f1f1;
+    position: fixed;
+    height: 100%;
+    overflow: auto;
+}
+
+
+ul.navi li a {
+    display: block;
+    background-color: lightskyblue;
+    color: black;
+    padding: 8px 12px;
+    text-decoration: none;
+}
+
+ul.navi li a.active {
+    background-color: dodgerblue;
+    color: white;
+}
+
+ul.navi li a.none {
+    background-color: lightskyblue;
+    color: black;
+}
+
+ul.navi li a:hover:not(.active) {
+    background-color: #555;
+    color: white;
+}
+
+
+div.content {
+    background-color: rgba(255, 255, 255, 0.8);
+    margin-left: 170px;
+    margin-right: 20px;
+    padding: 30px;
+    padding-top: 10px;
+}
+
+@media screen and (max-width: 900px) {
+    ul.navi {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+
+    ul.navi li a {
+        float: left;
+        padding: 15px;
+    }
+
+    div.content {
+        margin-left: 20px;
+        margin-top: 20px;
+    }
+}
