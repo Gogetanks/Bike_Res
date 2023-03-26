@@ -2,6 +2,10 @@
 
 {% load static %}
 
+{% block head %}
+	<link rel="stylesheet" href="{% static 'css/account_form.css' %}"/>
+{% endblock %}
+
 {% block content %}
 	<div id="form-div">
 		<h3>{% block form-title %}{% endblock %}</h3>
@@ -18,7 +22,9 @@
 					</tr>
 				{% endfor %}
 				<tr>
-					<td colspan="2"><input type="submit" value={% block submit-value %}{% endblock %}></td>
+					<td colspan="2">
+						<input type="submit" value={% block submit-value %}{% endblock %}>
+					</td>
 				</tr>
 			</table>
 		</form>
