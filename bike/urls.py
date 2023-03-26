@@ -9,4 +9,9 @@ urlpatterns = [
     path('<username>', views.profile_request, name='profile'),
     path('about/', views.about, name='about'),
     path('bikes/', views.bikes, name='bikes'),
+    path('reserve/', views.reserve, name='reserve'),
+    path('payment/', views.payment, name='payment'),
+    path('complaint/', views.complaint, name='bikes'),
+
+
 ]

@@ -69,3 +69,16 @@ def bikes(request):
 
 def about(request):
     return render(request, 'about_us.html')
+
+
+def reserve(request):
+    return render(request, 'reservation.html')
+
+
+def payment(request):
+    return render(request, 'payment.html')
+
+
+def complaint(request):
+    return render(request, 'complaint.html')
+
