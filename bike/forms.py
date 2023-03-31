@@ -8,6 +8,12 @@ class LoginForm(forms.Form):
     username_or_email = forms.CharField(label='Username / Email', max_length=50)
     password = forms.CharField(label='Password', max_length=50, widget=forms.PasswordInput)
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # add css classes for input fields
+        self.fields["username_or_email"].widget.attrs.update({"class": "form-control"})
+        self.fields["password"].widget.attrs.update({"class": "form-control"})
+
     def clean(self):
         username_or_email = self.data['username_or_email']
         password = self.data['password']
@@ -28,6 +34,14 @@ class RegisterForm(UserCreationForm):
     class Meta:
         model = User
         fields = ["username", "email", "password1", "password2"]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # add css classes for input fields
+        self.fields["username"].widget.attrs.update({"class": "form-control"})
+        self.fields["email"].widget.attrs.update({"class": "form-control"})
+        self.fields["password1"].widget.attrs.update({"class": "form-control"})
+        self.fields["password2"].widget.attrs.update({"class": "form-control"})
 
     def save(self, commit=True):
         user = super(RegisterForm, self).save(commit=False)
