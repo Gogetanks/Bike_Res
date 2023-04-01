@@ -4,13 +4,13 @@ from .models import *
 admin.site.register(User)
 
 
-admin.site.register(Category)
+@admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ['name', 'slug']
     prepopulated_fields = {'slug' : ('name',)}
 
 
-admin.site.register(Bike)
+@admin.register(Bike)
 class BikeAdmin(admin.ModelAdmin):
     list_display = ['name', 'owner', 'slug', 'price',
                     'in_stock']
