@@ -11,8 +11,8 @@ class LoginForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # add css classes for input fields
-        self.fields["username_or_email"].widget.attrs.update({"class": "form-control"})
-        self.fields["password"].widget.attrs.update({"class": "form-control"})
+        for field in self.fields:
+            self.fields[field].widget.attrs.update({"class": "form-control"})
 
     def clean(self):
         username_or_email = self.data['username_or_email']
@@ -33,15 +33,13 @@ class RegisterForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ["username", "email", "password1", "password2"]
+        fields = ["username", "first_name", "last_name", "email", "password1", "password2"]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # add css classes for input fields
-        self.fields["username"].widget.attrs.update({"class": "form-control"})
-        self.fields["email"].widget.attrs.update({"class": "form-control"})
-        self.fields["password1"].widget.attrs.update({"class": "form-control"})
-        self.fields["password2"].widget.attrs.update({"class": "form-control"})
+        for field in self.fields:
+            self.fields[field].widget.attrs.update({"class": "form-control"})
 
     def save(self, commit=True):
         user = super(RegisterForm, self).save(commit=False)
