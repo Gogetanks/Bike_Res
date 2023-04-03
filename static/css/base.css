@@ -87,24 +87,6 @@ div.content {
     padding: 10px 30px 30px;
 }
 
-@media screen and (max-width: 900px) {
-    ul.navi {
-        width: 100%;
-        height: auto;
-        position: relative;
-    }
-
-    ul.navi li a {
-        float: left;
-        padding: 15px;
-    }
-
-    div.content {
-        margin-left: 20px;
-        margin-top: 20px;
-    }
-}
-
 .rounded-custom {
     border-radius: 12px;
 }

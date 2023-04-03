@@ -11,7 +11,7 @@
 	</head>
 	<body class="d-flex flex-column min-vh-100">
 
-		<!-- Navbar -->
+		<!-- Header Navbar -->
 		<nav class="navbar navbar-expand-lg bg-light ">
 			<div class="container">
 				<a href="/" class="navbar-brand">B.I.K.E</a>
@@ -49,20 +49,25 @@
 
 		</nav>
 		
-		<hr />
-		<ul class="navi">
-			<li><a href="{% url 'home' %}"
-				class="{% if request.resolver_match.url_name == 'home' %}active{% else %}none{% endif %}">
-				Home
-			</a></li>
-			<li><a href="{% url 'about' %}"
-				class="{% if request.resolver_match.url_name == 'about' %}active{% else %}none{% endif %}">
-				About Us
-			</a></li>
-			<!--Create similar navigation bar items when adding new page templates-->
-			<li><a href="#">Dummy1</a></li>
-			<li><a href="#">Dummy2</a></li>
-		</ul>
+		<div class="container-fluid">
+			<nav class="nav flex-column">
+				<ul class="navi">
+					<li><a href="{% url 'home' %}"
+							class="{% if request.resolver_match.url_name == 'home' %}active{% else %}none{% endif %}">
+							Home
+						</a></li>
+					<li><a href="{% url 'about' %}"
+							class="{% if request.resolver_match.url_name == 'about' %}active{% else %}none{% endif %}">
+							About Us
+						</a></li>
+					<!--Create similar navigation bar items when adding new page templates-->
+					<li><a href="#">Dummy1</a></li>
+					<li><a href="#">Dummy2</a></li>
+				</ul>
+		
+			</nav>
+		</div>
+		<!--content-->
 		<div class="content">
 			{% block content %}
 			{% endblock %}
