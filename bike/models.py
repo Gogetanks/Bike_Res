@@ -7,13 +7,12 @@ import uuid
 
 class User(AbstractUser):
     email = models.EmailField(_('email address'), unique=True)
+
     def is_worker(self):
         return self.groups.filter(name='worker').exists()
+
     def is_mechanic(self):
         return self.groups.filter(name='mechanic').exists()
-
-
-
 
 class Category(models.Model):
     name = models.CharField(max_length=255, db_index=True)
