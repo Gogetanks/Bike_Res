@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from .forms import LoginForm, RegisterForm
+from .forms import LoginForm, RegisterForm, EditProfileForm
 from .models import User
 
 
@@ -23,6 +23,16 @@ def profile_request(request, username):
     user = User.objects.get(username=username)
     return render(request, 'accounts/profile.html', context={'user': user})
 
+
+def edit_profile_request(request):
+    if request.method == 'POST':
+        form = EditProfileForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('profile', request.user.username)
+    else:
+        form = EditProfileForm(instance=request.user)
+    return render(request, 'accounts/edit_profile.html', {'form': form})
 
 # -------- #
 # ACCOUNTS #
@@ -61,6 +71,11 @@ def register_request(request):
     else:
         form = RegisterForm()
     return render(request, 'accounts/register.html', context={'form': form})
+
+def delete_account_request(request):
+    if request.method == 'GET':
+        request.user.delete()
+        return redirect('login')
 
 
 def bikes(request):
