@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import Group
 from django.contrib import messages
 from .forms import LoginForm, RegisterForm, EditProfileForm
 from .models import User
@@ -89,7 +90,10 @@ def worker_main_request(request):
     
 def account_management_request(request):
     if request.user.is_worker():
-        return render(request, 'worker/account_management.html')
+        
+        users = User.objects.all()
+        groups = Group.objects.all()
+        return render(request, 'worker/account_management.html',{'users': users, 'groups': groups})
     return redirect('home')
     
 
