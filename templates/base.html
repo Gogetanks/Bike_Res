@@ -17,6 +17,12 @@
 				<a href="/" class="navbar-brand">B.I.K.E</a>
 				<div class="collaps divbar-collaps">
 					<ul class="navbar-nav ms-auto">
+						{% if user.is_authenticated and user.is_worker %}
+						<li class="nav-item">
+							<a href="{% url 'worker' %}" class="nav-link">worker view</a>
+						</li>
+						{% endif %}
+						
 						{% if user.is_authenticated %}
 						<li class="nav-item">
 							<a href="{% url 'logout' %}" class="nav-link">log out</a>

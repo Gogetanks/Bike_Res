@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, Group
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from .enums import *
@@ -7,6 +7,13 @@ import uuid
 
 class User(AbstractUser):
     email = models.EmailField(_('email address'), unique=True)
+    def is_worker(self):
+        return self.groups.filter(name='worker').exists()
+    def is_mechanic(self):
+        return self.groups.filter(name='mechanic').exists()
+
+
+
 
 class Category(models.Model):
     name = models.CharField(max_length=255, db_index=True)

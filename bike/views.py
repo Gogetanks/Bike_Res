@@ -78,6 +78,21 @@ def delete_account_request(request):
         return redirect('login')
 
 
+# -------- #
+#  WORKER  #
+# -------- #
+
+def worker_main_request(request):
+    if request.user.is_worker():
+        return render(request, 'worker/worker_main.html')
+    return redirect('home')
+    
+def account_management_request(request):
+    if request.user.is_worker():
+        return render(request, 'worker/account_management.html')
+    return redirect('home')
+    
+
 def bikes(request):
     return HttpResponse("Bikes")
 
