@@ -96,6 +96,18 @@ def account_management_request(request):
         return render(request, 'worker/account_management.html',{'users': users, 'groups': groups})
     return redirect('home')
     
+def deactivate_user(request, user_id):
+    if request.user.is_worker():
+        user = User.objects.get(id=user_id)
+        user.is_active = False
+        user.save()
+    return redirect('account_management')
+
+def delete_user(request, user_id):
+    if request.user.is_worker():
+        user = User.objects.get(id=user_id)
+        user.delete()
+    return redirect('account_management')
 
 def bikes(request):
     return HttpResponse("Bikes")
