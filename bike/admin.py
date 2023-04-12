@@ -20,3 +20,11 @@ class ReservationAdmin(admin.ModelAdmin):
     list_filter = ['status', 'requestDate', 'endDate']
     filter_horizontal = ('bikes',)
     style_fields = {'bikes': 'm2m_transfer'}
+
+@admin.register(Complaint)
+class ComplaintAdmin(admin.ModelAdmin):
+    list_filter = ['customer', 'status', 'lastUpdate']
+
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    list_filter = ['user']

@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import Group
 from django.contrib import messages
 from .forms import LoginForm, RegisterForm, EditProfileForm
-from .models import User
+from .models import User, Complaint
 
 
 # ---- #
@@ -93,7 +93,7 @@ def account_management_request(request):
         
         users = User.objects.all()
         groups = Group.objects.all()
-        return render(request, 'worker/account_management.html',{'users': users, 'groups': groups})
+        return render(request, 'worker/account_management.html', {'users': users, 'groups': groups})
     return redirect('home')
     
 def deactivate_user(request, user_id):
@@ -124,7 +124,29 @@ def reserve(request):
 def payment(request):
     return render(request, 'payment.html')
 
+# ---------- #
+# COMPLAINTS #
+# ---------- #
+def complaints_request(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
 
-def complaint(request):
-    return render(request, 'complaint.html')
+    return render(request, 'complaints/complaints.html',
+                  {'complaints': Complaint.objects.filter(customer=request.user)})
 
+def complaint_request(request, complaint_id):
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    if not Complaint.objects.filter(customer=request.user, id=complaint_id).exists():
+        messages.error(request, 'Invalid complaint')
+        return redirect('complaints')
+
+    return render(request, 'complaints/complaint.html',
+                  {'complaint': Complaint.objects.get(id=complaint_id)})
+
+def new_complaint_request(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    return render(request, 'complaints/new_complaint.html')

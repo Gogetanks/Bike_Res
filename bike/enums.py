@@ -9,3 +9,12 @@ class ReservationStatus(Enum):
     @classmethod
     def choices(cls):
         return ((item.name, item.value) for item in cls)
+
+class ComplaintStatus(Enum):
+    OPENED = 'Opened'
+    SOLVED = 'Solved'
+    CLOSED = 'Closed'
+
+    @classmethod
+    def choices(cls):
+        return ((item.name, item.value) for item in cls)

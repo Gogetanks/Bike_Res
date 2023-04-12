@@ -52,3 +52,28 @@ class Reservation(models.Model):
     def __str__(self):
         return ', '.join([bike.name for bike in self.bikes.all()]) +\
                ' [' + str(self.requestDate.strftime('%Y-%m-%d %H:%m')) + ']'
+
+class Complaint(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    lastUpdate = models.DateTimeField(default=now)
+    customer = models.ForeignKey(User, related_name='complaint', on_delete=models.CASCADE)
+    description = models.CharField(max_length=256)
+    status = models.CharField(
+        _('status'), default=ComplaintStatus.OPENED, choices=ComplaintStatus.choices(), max_length=32
+    )
+
+    class Meta:
+        ordering = ['-lastUpdate']
+
+    def __str__(self):
+        return self.customer.username + ' (' + str(self.id) + ')'
+
+class Comment(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    content = models.TextField()
+    time = models.DateTimeField(default=now)
+    complaint = models.ForeignKey(Complaint, related_name='comment', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, related_name='comment', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.user.username + ' (' + str(self.id) + ')'
