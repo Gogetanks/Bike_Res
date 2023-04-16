@@ -1,4 +1,21 @@
 {% extends 'base.html' %}
 
 {% block content %}
+	{% for comment in comments %}
+		<div class="d-block m-3">
+		{% if comment.user == complaint.customer %}
+			<div class="rounded p-3" style="max-width: 30%; background-color: #f1f1f1;">
+				<div><b>{{ comment.user.username }}:</b></div>
+				<div>{{ comment.content }}</div>
+				<div class="mt-2"><small class="text-muted">{{ comment.time }}</small></div>
+			</div>
+		{% else %}
+			<div class="rounded p-3" style="max-width: 30%; background-color: paleturquoise">
+				<div><b>{{ comment.user.username }}:</b></div>
+				<div>{{ comment.content }}</div>
+				<div class="mt-2"><small class="text-muted">{{ comment.time }}</small></div>
+			</div>
+		{% endif %}
+		</div>
+	{% endfor %}
 {% endblock %}

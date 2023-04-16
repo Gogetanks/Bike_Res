@@ -46,7 +46,7 @@ class Reservation(models.Model):
     requestDate = models.DateTimeField(default=now)
     endDate = models.DateTimeField()
     status = models.CharField(
-        _('status'), default=ReservationStatus.PENDING, choices=ReservationStatus.choices(), max_length=32
+        _('status'), default=ReservationStatus.PENDING.name, choices=ReservationStatus.choices(), max_length=32
     )
 
     def __str__(self):
@@ -59,7 +59,7 @@ class Complaint(models.Model):
     customer = models.ForeignKey(User, related_name='complaint', on_delete=models.CASCADE)
     description = models.CharField(max_length=256)
     status = models.CharField(
-        _('status'), default=ComplaintStatus.OPENED, choices=ComplaintStatus.choices(), max_length=32
+        _('status'), default=ComplaintStatus.OPENED.name, choices=ComplaintStatus.choices(), max_length=32
     )
 
     class Meta:

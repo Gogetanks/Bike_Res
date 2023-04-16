@@ -3,8 +3,8 @@ from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import Group
 from django.contrib import messages
-from .forms import LoginForm, RegisterForm, EditProfileForm
-from .models import User, Complaint
+from .forms import LoginForm, RegisterForm, EditProfileForm, ComplaintForm
+from .models import User, Complaint, Comment
 
 
 # ---- #
@@ -142,11 +142,25 @@ def complaint_request(request, complaint_id):
         messages.error(request, 'Invalid complaint')
         return redirect('complaints')
 
+    complaint = Complaint.objects.get(id=complaint_id)
     return render(request, 'complaints/complaint.html',
-                  {'complaint': Complaint.objects.get(id=complaint_id)})
+                  {'complaint': complaint,
+                   'comments': Comment.objects.filter(complaint=complaint)})
 
 def new_complaint_request(request):
     if not request.user.is_authenticated:
         return redirect('login')
 
-    return render(request, 'complaints/new_complaint.html')
+    if request.method == 'POST':
+        form = ComplaintForm(request.POST)
+        if form.is_valid():
+            complaint = form.save(commit=False)
+            complaint.customer = request.user
+            complaint.save()
+            comment = Comment(content=complaint.description, complaint=complaint, user=request.user)
+            comment.save()
+
+            return redirect('complaint', complaint.id)
+    else:
+        form = ComplaintForm()
+    return render(request, 'complaints/new_complaint.html', {'form': form})
