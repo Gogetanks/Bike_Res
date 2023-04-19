@@ -7,7 +7,7 @@ urlpatterns = [
     path('login/', views.login_request, name='login'),
     path('logout/', views.logout_request, name='logout'),
     path('register/', views.register_request, name='register'),
-    path('profile/<username>', views.profile_request, name='profile'),
+    path('profile/', views.profile_request, name='profile'),
     path('edit_profile/', views.edit_profile_request, name='edit_profile'),
     path('delete_account/', views.delete_account_request, name='delete_account'),
     # worker pages
@@ -24,4 +24,5 @@ urlpatterns = [
     path('complaints/', views.complaints_request, name='complaints'),
     path('complaints/<uuid:complaint_id>/', views.complaint_request, name='complaint'),
     path('complaints/new/', views.new_complaint_request, name='new_complaint'),
+    path('complaints/unattached/', views.unattached_complaints_request, name='unattached_complaints'),
 ]

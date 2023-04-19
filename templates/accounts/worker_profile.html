@@ -1,0 +1,6 @@
+{% extends 'accounts/base_profile.html' %}
+
+{% block profile-extra %}
+	<a href="{% url 'unattached_complaints' %}" class="btn btn-info">
+		Pending Complaints</a>
+{% endblock %}

@@ -56,10 +56,12 @@ class Reservation(models.Model):
 class Complaint(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     lastUpdate = models.DateTimeField(default=now)
-    customer = models.ForeignKey(User, related_name='complaint', on_delete=models.CASCADE)
+    customer = models.ForeignKey(User, related_name='customer_complaint', on_delete=models.CASCADE)
+    worker = models.ForeignKey(User, related_name='worker_complaint', on_delete=models.SET_NULL, null=True)
+    mechanic = models.ForeignKey(User, related_name='mechanic_complaint', on_delete=models.SET_NULL, null=True)
     description = models.CharField(max_length=256)
     status = models.CharField(
-        _('status'), default=ComplaintStatus.OPENED.name, choices=ComplaintStatus.choices(), max_length=32
+        _('status'), default=ComplaintStatus.UNATTACHED.name, choices=ComplaintStatus.choices(), max_length=32
     )
 
     class Meta:

@@ -3,8 +3,18 @@ from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import Group
 from django.contrib import messages
+
+from .enums import ComplaintStatus
 from .forms import LoginForm, RegisterForm, EditProfileForm, ComplaintForm
 from .models import User, Complaint, Comment
+
+# ----- #
+# UTILS #
+# ----- #
+def get_user(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+    return User.objects.get(username=request.user.username)
 
 
 # ---- #
@@ -17,12 +27,12 @@ def home_request(request):
 # ------- #
 # PROFILE #
 # ------- #
-def profile_request(request, username):
-    if not request.user.is_authenticated:
-        return redirect('login')
+def profile_request(request):
+    user = get_user(request)
 
-    user = User.objects.get(username=username)
-    return render(request, 'accounts/profile.html', context={'user': user})
+    if user.is_worker():
+        return render(request, 'accounts/worker_profile.html', context={'user': user})
+    return render(request, 'accounts/base_profile.html', context={'user': user})
 
 
 def edit_profile_request(request):
@@ -44,12 +54,13 @@ def login_request(request):
         if form.is_valid():
             username_or_email = form.cleaned_data['username_or_email']
             password = form.cleaned_data['password']
+            print(username_or_email, password)
             user = authenticate(username=username_or_email, password=password)
             if user is None:
                 user = authenticate(email=username_or_email, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('profile', user.username)
+                return redirect('profile')
     else:
         form = LoginForm()
     return render(request, 'accounts/login.html', context={"form": form})
@@ -82,29 +93,31 @@ def delete_account_request(request):
 # -------- #
 #  WORKER  #
 # -------- #
-
 def worker_main_request(request):
-    if request.user.is_worker():
+    user = get_user(request)
+    if user.is_worker():
         return render(request, 'worker/worker_main.html')
     return redirect('home')
     
 def account_management_request(request):
-    if request.user.is_worker():
-        
+    user = get_user(request)
+    if user.is_worker():
         users = User.objects.all()
         groups = Group.objects.all()
         return render(request, 'worker/account_management.html', {'users': users, 'groups': groups})
     return redirect('home')
     
 def deactivate_user(request, user_id):
-    if request.user.is_worker():
+    user = get_user(request)
+    if user.is_worker():
         user = User.objects.get(id=user_id)
         user.is_active = False
         user.save()
     return redirect('account_management')
 
 def delete_user(request, user_id):
-    if request.user.is_worker():
+    user = get_user(request)
+    if user.is_worker():
         user = User.objects.get(id=user_id)
         user.delete()
     return redirect('account_management')
@@ -128,11 +141,24 @@ def payment(request):
 # COMPLAINTS #
 # ---------- #
 def complaints_request(request):
-    if not request.user.is_authenticated:
-        return redirect('login')
+    user = get_user(request)
 
-    return render(request, 'complaints/complaints.html',
-                  {'complaints': Complaint.objects.filter(customer=request.user)})
+    if user.is_worker():
+        return render(request, 'complaints/base_complaints.html',
+                      {'complaints': Complaint.objects.filter(worker=user)})
+
+    return render(request, 'complaints/customer_complaints.html',
+                  {'complaints': Complaint.objects.filter(customer=user)})
+
+def unattached_complaints_request(request):
+    user = get_user(request)
+
+    if not user.is_worker():
+        messages.error(request, 'You are not authorize to perform this action.')
+        return redirect('complaints')
+
+    return render(request, 'complaints/base_complaints.html',
+                  {'complaints': Complaint.objects.filter(status='UNATTACHED')})
 
 def complaint_request(request, complaint_id):
     if not request.user.is_authenticated:

@@ -11,6 +11,7 @@ class ReservationStatus(Enum):
         return ((item.name, item.value) for item in cls)
 
 class ComplaintStatus(Enum):
+    UNATTACHED = 'Unattached'
     OPENED = 'Opened'
     SOLVED = 'Solved'
     CLOSED = 'Closed'

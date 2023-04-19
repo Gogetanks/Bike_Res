@@ -19,7 +19,8 @@
 			{% for complaint in complaints %}
 				{% if complaint.status != 'CLOSED' %}
 				<tr class="
-					{% if complaint.status == 'OPENED' %} table-warning
+					{% if complaint.status == 'UNATTACHED' %} table-secondary
+					{% elif complaint.status == 'OPENED' %} table-warning
 					{% else %} table-success
 					{% endif %}">
 					<td>{{ forloop.counter }}</td>
@@ -32,10 +33,7 @@
 			{%  endfor %}
   		</tbody>
 	</table>
-	<a href="{% url 'new_complaint' %}"
-	   class="btn btn-danger">
-		Start new complaint
-	</a>
+	{% block complaints-extra %}{% endblock %}
 	</div>
 	</div>
 	</div>

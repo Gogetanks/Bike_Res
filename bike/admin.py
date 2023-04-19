@@ -1,7 +1,10 @@
 from django.contrib import admin
 from .models import *
 
-admin.site.register(User)
+@admin.register(User)
+class UserAdmin(admin.ModelAdmin):
+    filter_horizontal = ('groups',)
+    style_fields = {'groups': 'm2m_transfer'}
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
