@@ -8,12 +8,23 @@ from .enums import ComplaintStatus
 from .forms import LoginForm, RegisterForm, EditProfileForm, ComplaintForm
 from .models import User, Complaint, Comment
 
+
 # ----- #
 # UTILS #
 # ----- #
 def get_user(request):
     if not request.user.is_authenticated:
-        return redirect('login')
+        messages.error(request, 'You are must login to perform some actions.')
+        return None
+    return User.objects.get(username=request.user.username)
+
+def get_worker(request):
+    user = get_user(request)
+    if not user:
+        return None
+    if not user.is_worker():
+        messages.error(request, 'You are nor authorize to perform this action.')
+        return None
     return User.objects.get(username=request.user.username)
 
 
@@ -29,9 +40,12 @@ def home_request(request):
 # ------- #
 def profile_request(request):
     user = get_user(request)
+    if not user:
+        return redirect('login')
 
     if user.is_worker():
         return render(request, 'accounts/worker_profile.html', context={'user': user})
+
     return render(request, 'accounts/base_profile.html', context={'user': user})
 
 
@@ -45,6 +59,7 @@ def edit_profile_request(request):
         form = EditProfileForm(instance=request.user)
     return render(request, 'accounts/edit_profile.html', {'form': form})
 
+
 # -------- #
 # ACCOUNTS #
 # -------- #
@@ -54,7 +69,6 @@ def login_request(request):
         if form.is_valid():
             username_or_email = form.cleaned_data['username_or_email']
             password = form.cleaned_data['password']
-            print(username_or_email, password)
             user = authenticate(username=username_or_email, password=password)
             if user is None:
                 user = authenticate(email=username_or_email, password=password)
@@ -84,9 +98,14 @@ def register_request(request):
         form = RegisterForm()
     return render(request, 'accounts/register.html', context={'form': form})
 
+
 def delete_account_request(request):
+    user = get_user(request)
+    if not user:
+        return redirect('login')
+
     if request.method == 'GET':
-        request.user.delete()
+        user.delete()
         return redirect('login')
 
 
@@ -95,32 +114,48 @@ def delete_account_request(request):
 # -------- #
 def worker_main_request(request):
     user = get_user(request)
+    if not user:
+        return redirect('login')
+
     if user.is_worker():
         return render(request, 'worker/worker_main.html')
     return redirect('home')
-    
+
+
 def account_management_request(request):
     user = get_user(request)
+    if not user:
+        return redirect('login')
+
     if user.is_worker():
         users = User.objects.all()
         groups = Group.objects.all()
         return render(request, 'worker/account_management.html', {'users': users, 'groups': groups})
     return redirect('home')
-    
+
+
 def deactivate_user(request, user_id):
     user = get_user(request)
+    if not user:
+        return redirect('login')
+
     if user.is_worker():
         user = User.objects.get(id=user_id)
         user.is_active = False
         user.save()
     return redirect('account_management')
 
+
 def delete_user(request, user_id):
     user = get_user(request)
+    if not user:
+        return redirect('login')
+
     if user.is_worker():
         user = User.objects.get(id=user_id)
         user.delete()
     return redirect('account_management')
+
 
 def bikes(request):
     return HttpResponse("Bikes")
@@ -137,11 +172,14 @@ def reserve(request):
 def payment(request):
     return render(request, 'payment.html')
 
+
 # ---------- #
 # COMPLAINTS #
 # ---------- #
 def complaints_request(request):
     user = get_user(request)
+    if not user:
+        return redirect('login')
 
     if user.is_worker():
         return render(request, 'complaints/base_complaints.html',
@@ -150,21 +188,23 @@ def complaints_request(request):
     return render(request, 'complaints/customer_complaints.html',
                   {'complaints': Complaint.objects.filter(customer=user)})
 
-def unattached_complaints_request(request):
-    user = get_user(request)
 
-    if not user.is_worker():
-        messages.error(request, 'You are not authorize to perform this action.')
+def unattached_complaints_request(request):
+    worker = get_worker(request)
+    if not worker:
         return redirect('complaints')
 
-    return render(request, 'complaints/base_complaints.html',
+    return render(request, 'complaints/unattached_complaints.html',
                   {'complaints': Complaint.objects.filter(status='UNATTACHED')})
 
+
 def complaint_request(request, complaint_id):
-    if not request.user.is_authenticated:
+    user = get_user(request)
+    if not user:
         return redirect('login')
 
-    if not Complaint.objects.filter(customer=request.user, id=complaint_id).exists():
+    if (user.is_worker() and not Complaint.objects.filter(worker=user, id=complaint_id).exists())\
+            and not Complaint.objects.filter(customer=user, id=complaint_id).exists():
         messages.error(request, 'Invalid complaint')
         return redirect('complaints')
 
@@ -172,6 +212,7 @@ def complaint_request(request, complaint_id):
     return render(request, 'complaints/complaint.html',
                   {'complaint': complaint,
                    'comments': Comment.objects.filter(complaint=complaint)})
+
 
 def new_complaint_request(request):
     if not request.user.is_authenticated:
@@ -190,3 +231,14 @@ def new_complaint_request(request):
     else:
         form = ComplaintForm()
     return render(request, 'complaints/new_complaint.html', {'form': form})
+
+
+def take_complaint_request(request, complaint_id):
+    worker = get_worker(request)
+    if worker:
+        complaint = Complaint.objects.get(id=complaint_id)
+        complaint.worker = worker
+        complaint.status = ComplaintStatus.OPENED.name
+        complaint.save()
+
+    return redirect('complaints')

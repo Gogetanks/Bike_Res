@@ -25,4 +25,5 @@ urlpatterns = [
     path('complaints/<uuid:complaint_id>/', views.complaint_request, name='complaint'),
     path('complaints/new/', views.new_complaint_request, name='new_complaint'),
     path('complaints/unattached/', views.unattached_complaints_request, name='unattached_complaints'),
+    path('complaints/take/<uuid:complaint_id>/', views.take_complaint_request, name='take_complaint'),
 ]
