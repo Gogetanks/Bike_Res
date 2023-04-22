@@ -33,7 +33,7 @@ class Bike(models.Model):
     year = models.PositiveSmallIntegerField(default=2000)
     owner = models.CharField(max_length=255, default='admin')
     description = models.TextField()
-    image = models.ImageField(upload_to='images/')
+    image = models.ImageField(upload_to='bikes/')
     slug = models.SlugField(max_length=255)
     price = models.DecimalField(max_digits=4, decimal_places=2)
     in_stock = models.BooleanField(default=True)

@@ -3,6 +3,8 @@ from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import Group
 from django.contrib import messages
+from django.views.generic.edit import FormView
+from django.urls import reverse_lazy
 
 from .enums import ComplaintStatus
 from .forms import LoginForm, RegisterForm, EditProfileForm, ComplaintForm, ReservationForm
@@ -161,17 +163,22 @@ def bike_list(request):
     bikes = Bike.objects.all()
     return render(request, 'bike_list.html', {'bikes': bikes})
 
+
 def bike_detail(request, slug):
     bike = get_object_or_404(Bike, slug=slug)
     return render(request, 'bike_detail.html', {'bike': bike})
+
+
 def category_list(request):
     categories = Category.objects.all()
     return render(request, 'category_list.html', {'categories': categories})
+
 
 def category_detail(request, pk):
     category = Category.objects.get(id=pk)
     bikes = Bike.objects.filter(categories=category)
     return render(request, 'category_detail.html', {'bikes': bikes})
+
 
 def about(request):
     return render(request, 'about_us.html')
@@ -182,23 +189,25 @@ def about(request):
 # ----------- #
 
 
-def reserve_request(request):
+class ReserveBikeView(FormView):
+    template_name = 'reservation.html'
+    form_class = ReservationForm
+    success_url = reverse_lazy('home')
 
-    if not request.user.is_authenticated:
-        return redirect('login')
+    def get_initial(self):
+        bike_id = self.kwargs['bike_id']
+        bike = Bike.objects.get(id=bike_id)
+        return {'bike': bike}
 
-    if request.method == 'POST':
-        form = ReservationForm(request.POST)
-        if form.is_valid():
-            reservation = form.save(commit=False)
-            reservation.user = request.user
-            reservation.save()
-
-            return redirect('payment')
-    else:
-        form = ReservationForm()
-    return render(request, 'reservation.html', {'form': form})
-
+    def form_valid(self, form):
+        reservation = form.save(commit=False)
+        reservation.user = self.request.user
+        reservation.save()
+        form.save_m2m()
+        bike = form.cleaned_data['bike']
+        bike.available = False
+        bike.save()
+        return super().form_valid(form)
 def payment(request):
     return render(request, 'payment.html')
 

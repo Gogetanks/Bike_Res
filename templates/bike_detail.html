@@ -4,5 +4,5 @@
     <img src="{{ MEDIA_URL }}{{ bike.image.url }}" alt="{{ bike.name }}">
     <p>{{ bike.description }}</p>
     <p>Price: ${{ bike.price }}</p>
-    <a href="{% url 'reserve' bike.id %}">Reserve</a>
+    <a href="{% url 'reserve' bike_id=bike.id %}">Reserve</a>
 {% endblock %}
