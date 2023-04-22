@@ -1,12 +1,12 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import Group
 from django.contrib import messages
 
 from .enums import ComplaintStatus
-from .forms import LoginForm, RegisterForm, EditProfileForm, ComplaintForm
-from .models import User, Complaint, Comment
+from .forms import LoginForm, RegisterForm, EditProfileForm, ComplaintForm, ReservationForm
+from .models import User, Complaint, Comment, Bike, Category
 
 
 # ----- #
@@ -157,17 +157,47 @@ def delete_user(request, user_id):
     return redirect('account_management')
 
 
-def bikes(request):
-    return HttpResponse("Bikes")
+def bike_list(request):
+    bikes = Bike.objects.all()
+    return render(request, 'bike_list.html', {'bikes': bikes})
 
+def bike_detail(request, slug):
+    bike = get_object_or_404(Bike, slug=slug)
+    return render(request, 'bike_detail.html', {'bike': bike})
+def category_list(request):
+    categories = Category.objects.all()
+    return render(request, 'category_list.html', {'categories': categories})
+
+def category_detail(request, pk):
+    category = Category.objects.get(id=pk)
+    bikes = Bike.objects.filter(categories=category)
+    return render(request, 'category_detail.html', {'bikes': bikes})
 
 def about(request):
     return render(request, 'about_us.html')
 
 
-def reserve(request):
-    return render(request, 'reservation.html')
+# ----------- #
+# RESERVATION #
+# ----------- #
 
+
+def reserve_request(request):
+
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    if request.method == 'POST':
+        form = ReservationForm(request.POST)
+        if form.is_valid():
+            reservation = form.save(commit=False)
+            reservation.user = request.user
+            reservation.save()
+
+            return redirect('payment')
+    else:
+        form = ReservationForm()
+    return render(request, 'reservation.html', {'form': form})
 
 def payment(request):
     return render(request, 'payment.html')
@@ -187,6 +217,8 @@ def complaints_request(request):
 
     return render(request, 'complaints/customer_complaints.html',
                   {'complaints': Complaint.objects.filter(customer=user)})
+
+
 
 
 def unattached_complaints_request(request):
@@ -242,3 +274,10 @@ def take_complaint_request(request, complaint_id):
         complaint.save()
 
     return redirect('complaints')
+
+
+def search(request):
+    query = request.GET.get('q')
+    bikes = Bike.objects.filter(description__contains=query)
+    context = {'bikes': bikes}
+    return render(request, 'search.html', context)

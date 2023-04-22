@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="bikes">
+
+{% for bike in bikes %}<table>
+            <tr>
+                <td><a href="{{bike.slug}}">{{ bike.name }}</a></td>
+                <img src="{{ MEDIA_URL }}{{ bike.image.url }}" alt="{{bike.name}}">
+                <td>Price: ${{ bike.price }}</td>
+            </tr></table>
+        {% endfor %}
+
+    </div>
+{% endblock %}
