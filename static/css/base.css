@@ -60,3 +60,11 @@ div.content {
 .rounded-custom {
     border-radius: 12px;
 }
+
+
+/* remove Navigation Bar margin */
+.container-fluid {
+    padding: 0;
+    margin: 0;
+  }
+  
