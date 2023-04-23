@@ -7,21 +7,27 @@
 {% endblock %}
 
 {% block content %}
-	<div class="container">
-	<h3>{% block form-title %}{% endblock %}</h3>
-	<div class="bdcontainer-sm">
-	<form method="post">
-		{% csrf_token %}
-		{{ form.non_field_errors }}
-		{% for field in form %}
-			<div class="form-outline mb-4">
-				<label class="label-control">{{ field.label }}</label>
-				{{ field }}
-			</div>
-		{% endfor %}
-		<button type="submit" class="btn btn-primary mb-4">{% block submit-value %}{% endblock %}</button>
-	</form>
-	{% block form-extra %}{% endblock %}
-	</div>
-	</div>
+<div class="container">
+  <div class="card">
+	  <div class="card-header bg-primary text-white">
+		<h3 class="mb-0">{% block form-title %}{% endblock %}</h3>
+	  </div>
+    <div class="card-body">
+      <div class="bdcontainer-sm">
+        <form method="post">
+          {% csrf_token %}
+          {{ form.non_field_errors }}
+          {% for field in form %}
+          <div class="form-outline mb-4">
+            <label class="label-control">{{ field.label }}</label>
+            {{ field }}
+          </div>
+          {% endfor %}
+          <button type="submit" class="btn btn-primary mb-4">{% block submit-value %}{% endblock %}</button>
+        </form>
+        {% block form-extra %}{% endblock %}
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

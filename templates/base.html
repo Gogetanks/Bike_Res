@@ -65,6 +65,11 @@
 						class="{% if request.resolver_match.url_name == 'complaints' %}active{% else %}none{% endif %}">
 						Complaints
 						</a></li>
+						
+					<li><a href="{% url 'profile' %}"
+						class="{% if request.resolver_match.url_name == 'profile' %}active{% else %}none{% endif %}">
+						My Profile
+						</a></li>
 					{% endif %}
 					<!--Create similar navigation bar items when adding new page templates-->
 					<li><a href="#">Dummy1</a></li>
