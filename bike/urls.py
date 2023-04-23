@@ -21,7 +21,7 @@ urlpatterns = [
     path('bikes/', views.bike_list, name='bike_list'),
     path('bikes/<str:slug>/', views.bike_detail, name='bike_detail'),
     path('categories/', views.category_list, name='category_list'),
-    path('categories/<int:pk>/', views.category_detail, name='category_detail'),
+    path('categories/<str:slug>/', views.category_detail, name='category_detail'),
     path('search/', views.search, name='search'),
 
     path('reserve/<uuid:bike_id>', views.ReserveBikeView.as_view(), name='reserve'),

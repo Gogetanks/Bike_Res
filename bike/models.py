@@ -37,6 +37,7 @@ class Bike(models.Model):
     slug = models.SlugField(max_length=255)
     price = models.DecimalField(max_digits=4, decimal_places=2)
     in_stock = models.BooleanField(default=True)
+    is_featured = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name

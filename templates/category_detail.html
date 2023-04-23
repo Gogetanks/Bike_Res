@@ -4,7 +4,7 @@
     {% for bike in bikes %}
     <div class="bikes">
         <img src="{{ MEDIA_URL }}{{ bike.image.url }}">
-        <h3><a href="{% url "bike_list" %}{{ bike.pk }}">{{ bike.name }}</a></h3>
+        <h3><a href="{% url "bike_list" %}{{ bike.slug }}">{{ bike.name }}</a></h3>
         <p>{{ bike.description }}</p>
         <p>Price: ${{ bike.price }}</p>
     </div>

@@ -34,7 +34,9 @@ def get_worker(request):
 # HOME #
 # ---- #
 def home_request(request):
-    return render(request, 'base.html')
+    featured_bikes = Bike.objects.filter(is_featured=True)
+    context = {'featured_bikes': featured_bikes}
+    return render(request, 'home.html', context)
 
 
 # ------- #
@@ -174,9 +176,9 @@ def category_list(request):
     return render(request, 'category_list.html', {'categories': categories})
 
 
-def category_detail(request, pk):
-    category = Category.objects.get(id=pk)
-    bikes = Bike.objects.filter(categories=category)
+def category_detail(request, slug):
+    category = get_object_or_404(Category, slug=slug)
+    bikes = Bike.objects.filter(category=category)
     return render(request, 'category_detail.html', {'bikes': bikes})
 
 
@@ -194,6 +196,11 @@ class ReserveBikeView(FormView):
     form_class = ReservationForm
     success_url = reverse_lazy('home')
 
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('login')
+        return super().dispatch(request, *args, **kwargs)
+
     def get_initial(self):
         bike_id = self.kwargs['bike_id']
         bike = Bike.objects.get(id=bike_id)
@@ -208,6 +215,8 @@ class ReserveBikeView(FormView):
         bike.available = False
         bike.save()
         return super().form_valid(form)
+
+
 def payment(request):
     return render(request, 'payment.html')
 
