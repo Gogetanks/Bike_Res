@@ -5,8 +5,8 @@
 {% for bike in bikes %}<table>
             <tr>
                 <td><a href="{{bike.slug}}">{{ bike.name }}</a></td>
-                <img src="{{ MEDIA_URL }}{{ bike.image.url }}" alt="{{bike.name}}">
-                <td>Price: ${{ bike.price }}</td>
+                <img src="{{ MEDIA_URL }}{{ bike.image.url }}" alt="{{bike.name}}" width="150px" height="auto">
+                <td>Price: ${{ bike.price }}/day</td>
             </tr></table>
         {% endfor %}
 

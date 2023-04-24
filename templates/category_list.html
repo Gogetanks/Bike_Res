@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
 {% for category in categories %}
-    <img src="{{ MEDIA_URL }}{{ category.image.url }}">
-    <h2><a href="{{ category.slug }}">{{ category.name }}</a></h2>
+   <h2><a href="{{ category.slug }}">{{ category.name }}</a></h2>
 {% endfor %}
 {% endblock %}

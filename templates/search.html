@@ -7,7 +7,7 @@
 
     <h2>Here are your Search Results</h2>
     <div class="bike">
-        <img src="{{ MEDIA_URL }}{{ bike.image.url }}">
+        <img src="{{ MEDIA_URL }}{{ bike.image.url }}" width="150px" height="auto">
         <h3><a href="{% url "bike_list" %}{{ bike.slug }}">{{ bike.name }}</a></h3>
         <p>{{ bike.description }}</p>
         <p>{{ bike.price }}</p>
