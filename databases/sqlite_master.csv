@@ -1,0 +1,50 @@
+table,django_migrations,django_migrations,2,"CREATE TABLE ""django_migrations"" (""id"" integer NOT NULL PRIMARY KEY AUTOINCREMENT, ""app"" varchar(255) NOT NULL, ""name"" varchar(255) NOT NULL, ""applied"" datetime NOT NULL)"
+table,sqlite_sequence,sqlite_sequence,3,"CREATE TABLE sqlite_sequence(name,seq)"
+table,django_content_type,django_content_type,6,"CREATE TABLE ""django_content_type"" (""id"" integer NOT NULL PRIMARY KEY AUTOINCREMENT, ""app_label"" varchar(100) NOT NULL, ""model"" varchar(100) NOT NULL)"
+index,django_content_type_app_label_model_76bd3d3b_uniq,django_content_type,4,"CREATE UNIQUE INDEX ""django_content_type_app_label_model_76bd3d3b_uniq"" ON ""django_content_type"" (""app_label"", ""model"")"
+table,auth_group_permissions,auth_group_permissions,9,"CREATE TABLE ""auth_group_permissions"" (""id"" integer NOT NULL PRIMARY KEY AUTOINCREMENT, ""group_id"" integer NOT NULL REFERENCES ""auth_group"" (""id"") DEFERRABLE INITIALLY DEFERRED, ""permission_id"" integer NOT NULL REFERENCES ""auth_permission"" (""id"") DEFERRABLE INITIALLY DEFERRED)"
+index,auth_group_permissions_group_id_permission_id_0cd325b0_uniq,auth_group_permissions,12,"CREATE UNIQUE INDEX ""auth_group_permissions_group_id_permission_id_0cd325b0_uniq"" ON ""auth_group_permissions"" (""group_id"", ""permission_id"")"
+index,auth_group_permissions_group_id_b120cbf9,auth_group_permissions,13,"CREATE INDEX ""auth_group_permissions_group_id_b120cbf9"" ON ""auth_group_permissions"" (""group_id"")"
+index,auth_group_permissions_permission_id_84c5c92e,auth_group_permissions,14,"CREATE INDEX ""auth_group_permissions_permission_id_84c5c92e"" ON ""auth_group_permissions"" (""permission_id"")"
+table,auth_permission,auth_permission,15,"CREATE TABLE ""auth_permission"" (""id"" integer NOT NULL PRIMARY KEY AUTOINCREMENT, ""content_type_id"" integer NOT NULL REFERENCES ""django_content_type"" (""id"") DEFERRABLE INITIALLY DEFERRED, ""codename"" varchar(100) NOT NULL, ""name"" varchar(255) NOT NULL)"
+index,auth_permission_content_type_id_codename_01ab375a_uniq,auth_permission,5,"CREATE UNIQUE INDEX ""auth_permission_content_type_id_codename_01ab375a_uniq"" ON ""auth_permission"" (""content_type_id"", ""codename"")"
+index,auth_permission_content_type_id_2f476e4b,auth_permission,10,"CREATE INDEX ""auth_permission_content_type_id_2f476e4b"" ON ""auth_permission"" (""content_type_id"")"
+table,auth_group,auth_group,11,"CREATE TABLE ""auth_group"" (""id"" integer NOT NULL PRIMARY KEY AUTOINCREMENT, ""name"" varchar(150) NOT NULL UNIQUE)"
+index,sqlite_autoindex_auth_group_1,auth_group,16,
+table,bike_user,bike_user,7,"CREATE TABLE ""bike_user"" (""id"" integer NOT NULL PRIMARY KEY AUTOINCREMENT, ""password"" varchar(128) NOT NULL, ""last_login"" datetime NULL, ""is_superuser"" bool NOT NULL, ""username"" varchar(150) NOT NULL UNIQUE, ""first_name"" varchar(150) NOT NULL, ""last_name"" varchar(150) NOT NULL, ""is_staff"" bool NOT NULL, ""is_active"" bool NOT NULL, ""date_joined"" datetime NOT NULL, ""email"" varchar(254) NOT NULL UNIQUE)"
+index,sqlite_autoindex_bike_user_1,bike_user,8,
+index,sqlite_autoindex_bike_user_2,bike_user,17,
+table,bike_user_groups,bike_user_groups,18,"CREATE TABLE ""bike_user_groups"" (""id"" integer NOT NULL PRIMARY KEY AUTOINCREMENT, ""user_id"" bigint NOT NULL REFERENCES ""bike_user"" (""id"") DEFERRABLE INITIALLY DEFERRED, ""group_id"" integer NOT NULL REFERENCES ""auth_group"" (""id"") DEFERRABLE INITIALLY DEFERRED)"
+table,bike_user_user_permissions,bike_user_user_permissions,19,"CREATE TABLE ""bike_user_user_permissions"" (""id"" integer NOT NULL PRIMARY KEY AUTOINCREMENT, ""user_id"" bigint NOT NULL REFERENCES ""bike_user"" (""id"") DEFERRABLE INITIALLY DEFERRED, ""permission_id"" integer NOT NULL REFERENCES ""auth_permission"" (""id"") DEFERRABLE INITIALLY DEFERRED)"
+index,bike_user_groups_user_id_group_id_a1b78913_uniq,bike_user_groups,20,"CREATE UNIQUE INDEX ""bike_user_groups_user_id_group_id_a1b78913_uniq"" ON ""bike_user_groups"" (""user_id"", ""group_id"")"
+index,bike_user_groups_user_id_f9551b7c,bike_user_groups,21,"CREATE INDEX ""bike_user_groups_user_id_f9551b7c"" ON ""bike_user_groups"" (""user_id"")"
+index,bike_user_groups_group_id_8d5ee956,bike_user_groups,24,"CREATE INDEX ""bike_user_groups_group_id_8d5ee956"" ON ""bike_user_groups"" (""group_id"")"
+index,bike_user_user_permissions_user_id_permission_id_482f665e_uniq,bike_user_user_permissions,25,"CREATE UNIQUE INDEX ""bike_user_user_permissions_user_id_permission_id_482f665e_uniq"" ON ""bike_user_user_permissions"" (""user_id"", ""permission_id"")"
+index,bike_user_user_permissions_user_id_849266b9,bike_user_user_permissions,26,"CREATE INDEX ""bike_user_user_permissions_user_id_849266b9"" ON ""bike_user_user_permissions"" (""user_id"")"
+index,bike_user_user_permissions_permission_id_1e61d22b,bike_user_user_permissions,27,"CREATE INDEX ""bike_user_user_permissions_permission_id_1e61d22b"" ON ""bike_user_user_permissions"" (""permission_id"")"
+table,django_admin_log,django_admin_log,31,"CREATE TABLE ""django_admin_log"" (""id"" integer NOT NULL PRIMARY KEY AUTOINCREMENT, ""object_id"" text NULL, ""object_repr"" varchar(200) NOT NULL, ""action_flag"" smallint unsigned NOT NULL CHECK (""action_flag"" >= 0), ""change_message"" text NOT NULL, ""content_type_id"" integer NULL REFERENCES ""django_content_type"" (""id"") DEFERRABLE INITIALLY DEFERRED, ""user_id"" bigint NOT NULL REFERENCES ""bike_user"" (""id"") DEFERRABLE INITIALLY DEFERRED, ""action_time"" datetime NOT NULL)"
+index,django_admin_log_content_type_id_c4bce8eb,django_admin_log,28,"CREATE INDEX ""django_admin_log_content_type_id_c4bce8eb"" ON ""django_admin_log"" (""content_type_id"")"
+index,django_admin_log_user_id_c564eba6,django_admin_log,29,"CREATE INDEX ""django_admin_log_user_id_c564eba6"" ON ""django_admin_log"" (""user_id"")"
+table,bike_category,bike_category,33,"CREATE TABLE ""bike_category"" (""id"" integer NOT NULL PRIMARY KEY AUTOINCREMENT, ""name"" varchar(255) NOT NULL, ""slug"" varchar(255) NOT NULL UNIQUE)"
+index,sqlite_autoindex_bike_category_1,bike_category,34,
+index,bike_category_name_701a15b0,bike_category,30,"CREATE INDEX ""bike_category_name_701a15b0"" ON ""bike_category"" (""name"")"
+table,django_session,django_session,46,"CREATE TABLE ""django_session"" (""session_key"" varchar(40) NOT NULL PRIMARY KEY, ""session_data"" text NOT NULL, ""expire_date"" datetime NOT NULL)"
+index,sqlite_autoindex_django_session_1,django_session,47,
+index,django_session_expire_date_a5c62663,django_session,48,"CREATE INDEX ""django_session_expire_date_a5c62663"" ON ""django_session"" (""expire_date"")"
+table,bike_comment,bike_comment,51,"CREATE TABLE ""bike_comment"" (""id"" char(32) NOT NULL PRIMARY KEY, ""content"" text NOT NULL, ""time"" datetime NOT NULL, ""complaint_id"" char(32) NOT NULL REFERENCES ""bike_complaint"" (""id"") DEFERRABLE INITIALLY DEFERRED, ""user_id"" bigint NOT NULL REFERENCES ""bike_user"" (""id"") DEFERRABLE INITIALLY DEFERRED)"
+index,sqlite_autoindex_bike_comment_1,bike_comment,52,
+index,bike_comment_complaint_id_dee73560,bike_comment,54,"CREATE INDEX ""bike_comment_complaint_id_dee73560"" ON ""bike_comment"" (""complaint_id"")"
+index,bike_comment_user_id_dce1fefc,bike_comment,55,"CREATE INDEX ""bike_comment_user_id_dce1fefc"" ON ""bike_comment"" (""user_id"")"
+table,bike_complaint,bike_complaint,56,"CREATE TABLE ""bike_complaint"" (""id"" char(32) NOT NULL PRIMARY KEY, ""lastUpdate"" datetime NOT NULL, ""description"" varchar(256) NOT NULL, ""customer_id"" bigint NOT NULL REFERENCES ""bike_user"" (""id"") DEFERRABLE INITIALLY DEFERRED, ""mechanic_id"" bigint NULL REFERENCES ""bike_user"" (""id"") DEFERRABLE INITIALLY DEFERRED, ""worker_id"" bigint NULL REFERENCES ""bike_user"" (""id"") DEFERRABLE INITIALLY DEFERRED, ""status"" varchar(32) NOT NULL)"
+index,sqlite_autoindex_bike_complaint_1,bike_complaint,57,
+index,bike_complaint_customer_id_b3dc4dc7,bike_complaint,35,"CREATE INDEX ""bike_complaint_customer_id_b3dc4dc7"" ON ""bike_complaint"" (""customer_id"")"
+index,bike_complaint_mechanic_id_0868ef45,bike_complaint,36,"CREATE INDEX ""bike_complaint_mechanic_id_0868ef45"" ON ""bike_complaint"" (""mechanic_id"")"
+index,bike_complaint_worker_id_279e44a4,bike_complaint,53,"CREATE INDEX ""bike_complaint_worker_id_279e44a4"" ON ""bike_complaint"" (""worker_id"")"
+table,bike_bike,bike_bike,49,"CREATE TABLE ""bike_bike"" (""id"" char(32) NOT NULL PRIMARY KEY, ""name"" varchar(255) NOT NULL, ""year"" smallint unsigned NOT NULL CHECK (""year"" >= 0), ""owner"" varchar(255) NOT NULL, ""description"" text NOT NULL, ""image"" varchar(100) NOT NULL, ""slug"" varchar(255) NOT NULL, ""price"" decimal NOT NULL, ""in_stock"" bool NOT NULL, ""category_id"" bigint NOT NULL REFERENCES ""bike_category"" (""id"") DEFERRABLE INITIALLY DEFERRED, ""is_featured"" bool NOT NULL)"
+index,sqlite_autoindex_bike_bike_1,bike_bike,50,
+index,bike_bike_slug_93d6c4f0,bike_bike,38,"CREATE INDEX ""bike_bike_slug_93d6c4f0"" ON ""bike_bike"" (""slug"")"
+index,bike_bike_category_id_7021016a,bike_bike,39,"CREATE INDEX ""bike_bike_category_id_7021016a"" ON ""bike_bike"" (""category_id"")"
+table,bike_reservation,bike_reservation,32,"CREATE TABLE ""bike_reservation"" (""id"" char(32) NOT NULL PRIMARY KEY, ""requestDate"" datetime NOT NULL, ""endDate"" datetime NOT NULL, ""status"" varchar(32) NOT NULL, ""bike_id"" char(32) NOT NULL REFERENCES ""bike_bike"" (""id"") DEFERRABLE INITIALLY DEFERRED, ""user_id"" bigint NOT NULL REFERENCES ""bike_user"" (""id"") DEFERRABLE INITIALLY DEFERRED)"
+index,sqlite_autoindex_bike_reservation_1,bike_reservation,37,
+index,bike_reservation_bike_id_5964b104,bike_reservation,40,"CREATE INDEX ""bike_reservation_bike_id_5964b104"" ON ""bike_reservation"" (""bike_id"")"
+index,bike_reservation_user_id_bc290ab6,bike_reservation,41,"CREATE INDEX ""bike_reservation_user_id_bc290ab6"" ON ""bike_reservation"" (""user_id"")"
