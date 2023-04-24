@@ -69,17 +69,7 @@ class Migration(migrations.Migration):
                 'verbose_name_plural': 'Categories',
             },
         ),
-        migrations.CreateModel(
-            name='Reservation',
-            fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('requestDate', models.DateTimeField(default=django.utils.timezone.now)),
-                ('endDate', models.DateTimeField()),
-                ('status', models.CharField(choices=[('PENDING', 'Pending'), ('CONFIRMED', 'Confirmed'), ('NOT_CONFIRMED', 'Not confirmed'), ('FINISHED', 'Finished')], default='PENDING', max_length=32, verbose_name='status')),
-                ('bike', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='bike.bike')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
-            ],
-        ),
+
         migrations.CreateModel(
             name='Complaint',
             fields=[
