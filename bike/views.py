@@ -1,12 +1,14 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import Group
 from django.contrib import messages
+from django.views.generic.edit import FormView
+from django.urls import reverse_lazy
 
 from .enums import ComplaintStatus
-from .forms import LoginForm, RegisterForm, EditProfileForm, ComplaintForm
-from .models import User, Complaint, Comment
+from .forms import LoginForm, RegisterForm, EditProfileForm, ComplaintForm, ReservationForm
+from .models import User, Complaint, Comment, Bike, Category
 
 
 # ----- #
@@ -32,7 +34,9 @@ def get_worker(request):
 # HOME #
 # ---- #
 def home_request(request):
-    return render(request, 'base.html')
+    featured_bikes = Bike.objects.filter(is_featured=True)
+    context = {'featured_bikes': featured_bikes}
+    return render(request, 'home.html', context)
 
 
 # ------- #
@@ -157,16 +161,60 @@ def delete_user(request, user_id):
     return redirect('account_management')
 
 
-def bikes(request):
-    return HttpResponse("Bikes")
+def bike_list(request):
+    bikes = Bike.objects.all()
+    return render(request, 'bike_list.html', {'bikes': bikes})
+
+
+def bike_detail(request, slug):
+    bike = get_object_or_404(Bike, slug=slug)
+    return render(request, 'bike_detail.html', {'bike': bike})
+
+
+def category_list(request):
+    categories = Category.objects.all()
+    return render(request, 'category_list.html', {'categories': categories})
+
+
+def category_detail(request, slug):
+    category = get_object_or_404(Category, slug=slug)
+    bikes = Bike.objects.filter(category=category)
+    return render(request, 'category_detail.html', {'bikes': bikes})
 
 
 def about(request):
     return render(request, 'about_us.html')
 
 
-def reserve(request):
-    return render(request, 'reservation.html')
+# ----------- #
+# RESERVATION #
+# ----------- #
+
+
+class ReserveBikeView(FormView):
+    template_name = 'reservation.html'
+    form_class = ReservationForm
+    success_url = reverse_lazy('home')
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('login')
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_initial(self):
+        bike_id = self.kwargs['bike_id']
+        bike = Bike.objects.get(id=bike_id)
+        return {'bike': bike}
+
+    def form_valid(self, form):
+        reservation = form.save(commit=False)
+        reservation.user = self.request.user
+        reservation.save()
+        form.save_m2m()
+        bike = form.cleaned_data['bike']
+        bike.available = False
+        bike.save()
+        return super().form_valid(form)
 
 
 def payment(request):
@@ -187,6 +235,8 @@ def complaints_request(request):
 
     return render(request, 'complaints/customer_complaints.html',
                   {'complaints': Complaint.objects.filter(customer=user)})
+
+
 
 
 def unattached_complaints_request(request):
@@ -242,3 +292,10 @@ def take_complaint_request(request, complaint_id):
         complaint.save()
 
     return redirect('complaints')
+
+
+def search(request):
+    query = request.GET.get('q')
+    bikes = Bike.objects.filter(description__contains=query)
+    context = {'bikes': bikes}
+    return render(request, 'search.html', context)

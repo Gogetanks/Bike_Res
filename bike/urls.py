@@ -18,8 +18,13 @@ urlpatterns = [
     path('delete-user/<int:user_id>/', views.delete_user, name='delete_user'),
 
     path('about/', views.about, name='about'),
-    path('bikes/', views.bikes, name='bikes'),
-    path('reserve/', views.reserve, name='reserve'),
+    path('bikes/', views.bike_list, name='bike_list'),
+    path('bikes/<str:slug>/', views.bike_detail, name='bike_detail'),
+    path('categories/', views.category_list, name='category_list'),
+    path('categories/<str:slug>/', views.category_detail, name='category_detail'),
+    path('search/', views.search, name='search'),
+
+    path('reserve/<uuid:bike_id>', views.ReserveBikeView.as_view(), name='reserve'),
     path('payment/', views.payment, name='payment'),
     path('complaints/', views.complaints_request, name='complaints'),
     path('complaints/<uuid:complaint_id>/', views.complaint_request, name='complaint'),

@@ -21,8 +21,8 @@ class BikeAdmin(admin.ModelAdmin):
 @admin.register(Reservation)
 class ReservationAdmin(admin.ModelAdmin):
     list_filter = ['status', 'requestDate', 'endDate']
-    filter_horizontal = ('bikes',)
-    style_fields = {'bikes': 'm2m_transfer'}
+    #filter_horizontal = ('bikes',)
+    #style_fields = {'bikes': 'm2m_transfer'}
 
 @admin.register(Complaint)
 class ComplaintAdmin(admin.ModelAdmin):

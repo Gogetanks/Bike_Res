@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>{{ category.name }}</h2>
+    {% for bike in bikes %}
+    <div class="bikes">
+        <img src="{{ MEDIA_URL }}{{ bike.image.url }}" width="150px" height="auto">
+        <h3><a href="{% url "bike_list" %}{{ bike.slug }}">{{ bike.name }}</a></h3>
+        <p>{{ bike.description }}</p>
+        <p>Price: ${{ bike.price }}/day</p>
+    </div>
+    {% endfor %}
+{% endblock %}

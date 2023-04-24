@@ -14,6 +14,7 @@ class User(AbstractUser):
     def is_mechanic(self):
         return self.groups.filter(name='mechanic').exists()
 
+
 class Category(models.Model):
     name = models.CharField(max_length=255, db_index=True)
     slug = models.SlugField(max_length=255, unique=True)
@@ -24,6 +25,7 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+
 class Bike(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     category = models.ForeignKey(Category, related_name='bike', on_delete=models.CASCADE)
@@ -31,18 +33,20 @@ class Bike(models.Model):
     year = models.PositiveSmallIntegerField(default=2000)
     owner = models.CharField(max_length=255, default='admin')
     description = models.TextField()
-    image = models.ImageField(upload_to='images/')
+    image = models.ImageField(upload_to='bikes/')
     slug = models.SlugField(max_length=255)
     price = models.DecimalField(max_digits=4, decimal_places=2)
     in_stock = models.BooleanField(default=True)
+    is_featured = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
 
+
 class Reservation(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    bikes = models.ManyToManyField(Bike)
+    bike = models.ForeignKey(Bike, on_delete=models.CASCADE)
     requestDate = models.DateTimeField(default=now)
     endDate = models.DateTimeField()
     status = models.CharField(
@@ -50,8 +54,9 @@ class Reservation(models.Model):
     )
 
     def __str__(self):
-        return ', '.join([bike.name for bike in self.bikes.all()]) +\
+        return str(self.bike.name) +\
                ' [' + str(self.requestDate.strftime('%Y-%m-%d %H:%m')) + ']'
+
 
 class Complaint(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -69,6 +74,7 @@ class Complaint(models.Model):
 
     def __str__(self):
         return self.customer.username + ' (' + str(self.id) + ')'
+
 
 class Comment(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
