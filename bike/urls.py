@@ -8,11 +8,17 @@ urlpatterns = [
     path('logout/', views.logout_request, name='logout'),
     path('register/', views.register_request, name='register'),
     path('profile/', views.profile_request, name='profile'),
+path('topup_account/', views.topup_account_request, name='topup_account'),
     path('edit_profile/', views.edit_profile_request, name='edit_profile'),
     path('delete_account/', views.delete_account_request, name='delete_account'),
     # worker pages
     path('worker/', views.worker_main_request, name='worker'),
     path('worker/account_management', views.account_management_request, name='account_management'),
+    path('worker/invoice_management', views.invoice_management_request, name='invoice_management'),
+    path('worker/invoice_management/worker_pay_invoice/<int:invoice_id>', views.worker_pay_invoice, name='worker_pay_invoice'),
+    path('worker/invoice_management/cancel_invoice/<int:invoice_id>', views.cancel_invoice, name='cancel_invoice'),
+    path('worker/invoice_management/delete_invoice/<int:invoice_id>', views.delete_invoice, name='delete_invoice'),
+
     # worker's account management
     path('deactivate-user/<int:user_id>/', views.deactivate_user, name='deactivate_user'),
     path('delete-user/<int:user_id>/', views.delete_user, name='delete_user'),
@@ -31,4 +37,9 @@ urlpatterns = [
     path('complaints/new/', views.new_complaint_request, name='new_complaint'),
     path('complaints/unattached/', views.unattached_complaints_request, name='unattached_complaints'),
     path('complaints/take/<uuid:complaint_id>/', views.take_complaint_request, name='take_complaint'),
+
+    # payments
+    path('invoices/', views.invoices_request, name='invoices'),
+    path('invoice/<int:invoice_id>', views.invoice_request, name='invoice'),
+
 ]

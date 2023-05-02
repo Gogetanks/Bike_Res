@@ -1,12 +1,27 @@
-{% extends 'base.html' %}
-{% block content %}
+{% extends "base.html" %}
 
-    <h2>{{ bike.name }}</h2>
-    <img src="{{ MEDIA_URL }}{{ bike.image.url }}" alt="{{ bike.name }}" width="150px" height="auto">
-    <p>{{ bike.description }}</p>
-    <p>Price: ${{ bike.price }}/day</p>
-        <form action="{% url 'reserve' bike_id=bike.id %}">
+{% load static %}
+
+{% block content %}
+    <h3>{{ bike.category }} {{ bike.name }}, {{ bike.year }}</h3>
+    <div class="d-block m-3">
+        <div class="rounded p-3" style="max-width: 30%; background-color: #f1f1f1;">
+            {% if bike.description %}
+            <div>{{ bike.description|linebreaks }}</div>
+            {% endif %}
+            <div>Price: {{ bike.price }} PLN</div>
+            {% if bike.image %}
+            <img src={{ bike.image.url }} height="350" alt='{{ bike.name }}'/>
+            {% endif %}
+
+            <div>Category: {{ bike.category }}</div>
+            <div>Year: {{ bike.year }}</div>
+            <div>Owner: {{ bike.owner }}</div>
+            <div>In stock: {{ bike.in_stock }}</div>
+
+            <form action="{% url 'reserve' bike_id=bike.id %}">
     <input type="submit" value="Reserve" />
 </form>
-
+        </div>
+    </div>
 {% endblock %}

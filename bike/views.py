@@ -6,10 +6,10 @@ from django.contrib import messages
 from django.views.generic.edit import FormView
 from django.urls import reverse_lazy
 
-from .enums import ComplaintStatus
-from .forms import LoginForm, RegisterForm, EditProfileForm, ComplaintForm, ReservationForm
-from .models import User, Complaint, Comment, Bike, Category
-
+from .enums import ComplaintStatus, InvoiceStatus
+from .forms import LoginForm, RegisterForm, EditProfileForm, ComplaintForm, ReservationForm, TopUpForm
+from .models import User, Complaint, Comment, Bike, Category, Invoice
+from django.utils.timezone import now
 
 # ----- #
 # UTILS #
@@ -19,6 +19,7 @@ def get_user(request):
         messages.error(request, 'You are must login to perform some actions.')
         return None
     return User.objects.get(username=request.user.username)
+
 
 def get_worker(request):
     user = get_user(request)
@@ -112,6 +113,22 @@ def delete_account_request(request):
         user.delete()
         return redirect('login')
 
+def topup_account_request(request):
+    if request.method == 'POST':
+        form = TopUpForm(request.POST)
+        if form.is_valid():
+            #invoice = Invoice(user=request.user, amount=form.cleaned_data['amount'], comment='TopUp account #{id}'.format(id=request.user.id))
+            #invoice.save()
+            invoice = form.save(commit=False)
+            invoice.user = request.user
+            invoice.comment='TopUp account #{id}'.format(id=request.user.id)
+            invoice.save()
+            return redirect('invoice', invoice.id)
+    else:
+        form = TopUpForm()
+    return render(request, 'accounts/topup_account.html', {'form': form})
+
+
 
 # -------- #
 #  WORKER  #
@@ -138,6 +155,71 @@ def account_management_request(request):
     return redirect('home')
 
 
+def invoice_management_request(request):
+    if request.user.is_worker():
+        invoices = Invoice.objects.all()
+        return render(request, 'worker/invoice_management.html', {'invoices': invoices})
+    return redirect('home')
+
+def worker_pay_invoice(request, invoice_id):
+    if request.user.is_worker():
+        invoice = Invoice.objects.get(id=invoice_id)
+        if (invoice.status == InvoiceStatus.UNPAID.name) and (invoice.due_date > now()):
+            invoice.status = InvoiceStatus.PAID.name
+            invoice.paid_on = now()
+            invoice.save()
+            user = User.objects.get(id=invoice.user.id)
+            user.credit += invoice.amount
+            user.save()
+        else:
+            messages.error(request, 'You are only allowed to pay an UNEXPIRED invoice with status UNPAID')
+        return redirect('invoice_management')
+    else:
+        messages.error(request, 'You must be authorized to browse the requested page')
+        return redirect('home')
+
+def cancel_invoice(request, invoice_id):
+    invoice = Invoice.objects.get(id=invoice_id)
+    def cancel_routine():
+        if invoice.status == InvoiceStatus.UNPAID.name:
+            invoice.status = InvoiceStatus.CANCELED.name
+            invoice.save()
+        else:
+            messages.error(request, 'You are only allowed to cancel an invoice with status UNPAID')
+    if request.user.is_worker():
+        cancel_routine()
+        return redirect('invoice_management')
+    if not request.user.is_authenticated:
+        messages.error(request, 'You must be authorized to browse the requested page')
+        return redirect('login')
+    if not Invoice.objects.filter(user=request.user, id=invoice_id).exists():
+        messages.error(request, 'You are not allowed to browse the requested page')
+        return redirect('invoices')
+    else:
+        cancel_routine()
+        return redirect('invoices')
+
+def delete_invoice(request, invoice_id):
+    invoice = Invoice.objects.get(id=invoice_id)
+    def delete_routine():
+        if invoice.status != InvoiceStatus.PAID.name:
+            invoice.delete()
+        else:
+            messages.error(request, 'You are not allowed to delete an invoice with status PAID')
+    if request.user.is_worker():
+        delete_routine()
+        return redirect('invoice_management')
+    if not request.user.is_authenticated:
+        messages.error(request, 'You must be authorized to browse the requested page')
+        return redirect('login')
+    if not Invoice.objects.filter(user=request.user, id=invoice_id).exists():
+        messages.error(request, 'You are not allowed to browse the requested page')
+        return redirect('invoices')
+    else:
+        delete_routine()
+        return redirect('invoices')
+
+
 def deactivate_user(request, user_id):
     user = get_user(request)
     if not user:
@@ -159,6 +241,18 @@ def delete_user(request, user_id):
         user = User.objects.get(id=user_id)
         user.delete()
     return redirect('account_management')
+
+# ----- #
+# ABOUT #
+# ----- #
+
+
+def about(request):
+    return render(request, 'about_us.html')
+
+# ----------------------#
+#  BIKES AND CATEGORIES #
+# --------------------- #
 
 
 def bike_list(request):
@@ -182,8 +276,16 @@ def category_detail(request, slug):
     return render(request, 'category_detail.html', {'bikes': bikes})
 
 
-def about(request):
-    return render(request, 'about_us.html')
+# ------ #
+# SEARCH #
+# ------ #
+
+
+def search(request):
+    query = request.GET.get('q')
+    bikes = Bike.objects.filter(description__contains=query)
+    context = {'bikes': bikes}
+    return render(request, 'search.html', context)
 
 
 # ----------- #
@@ -217,10 +319,6 @@ class ReserveBikeView(FormView):
         return super().form_valid(form)
 
 
-def payment(request):
-    return render(request, 'payment.html')
-
-
 # ---------- #
 # COMPLAINTS #
 # ---------- #
@@ -235,8 +333,6 @@ def complaints_request(request):
 
     return render(request, 'complaints/customer_complaints.html',
                   {'complaints': Complaint.objects.filter(customer=user)})
-
-
 
 
 def unattached_complaints_request(request):
@@ -294,8 +390,30 @@ def take_complaint_request(request, complaint_id):
     return redirect('complaints')
 
 
-def search(request):
-    query = request.GET.get('q')
-    bikes = Bike.objects.filter(description__contains=query)
-    context = {'bikes': bikes}
-    return render(request, 'search.html', context)
+def payment(request):
+    return render(request, 'payment.html')
+
+
+# ---------- #
+#  INVOICES  #
+# ---------- #
+def invoices_request(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    return render(request, 'invoices/invoices.html',
+                  {'invoices': Invoice.objects.filter(user=request.user)})
+
+
+def invoice_request(request, invoice_id):
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    if (not Invoice.objects.filter(user=request.user, id=invoice_id).exists()) and (not request.user.is_worker()):
+        messages.error(request, 'You are not allowed to see that page')
+        return redirect('invoices')
+
+    invoice = Invoice.objects.get(id=invoice_id)
+    return render(request, 'invoices/invoice.html',
+                  {'invoice': invoice,
+                   })

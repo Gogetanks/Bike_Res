@@ -4,6 +4,16 @@ from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from .enums import *
 import uuid
+import datetime
+from django.core.exceptions import ValidationError
+
+
+def validate_positive_number(value):
+    if value <= 0:
+        raise ValidationError(
+            _("%(value)s is not a positive number"),
+            params={"value": value},
+        )
 
 class User(AbstractUser):
     email = models.EmailField(_('email address'), unique=True)
@@ -85,3 +95,23 @@ class Comment(models.Model):
 
     def __str__(self):
         return self.user.username + ' (' + str(self.id) + ')'
+
+
+# return a date when the invoice is expired
+def invoice_due_to():
+        return now() + datetime.timedelta(days=1)
+
+class Invoice(models.Model):
+    user = models.ForeignKey(User, related_name='user', on_delete=models.CASCADE)
+    created_on = models.DateTimeField('created on', default=now)
+    paid_on = models.DateTimeField('paid on', null=True, blank=True)
+    due_date = models.DateTimeField('due date', default=invoice_due_to)
+    amount = models.DecimalField(max_digits=6, decimal_places=2, default=50, validators=[validate_positive_number])
+    status = models.CharField(
+        _('status'), default=InvoiceStatus.UNPAID.name, choices=InvoiceStatus.choices(), max_length=32
+    )
+    paid_via = models.TextField(default='Stripe')
+    comment = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return 'Invoice #' + str(self.id) + ' (' + self.user.username + ')'

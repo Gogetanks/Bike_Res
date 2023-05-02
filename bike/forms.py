@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth import authenticate
 from django.core.validators import ValidationError
 from django.contrib.auth.forms import UserCreationForm
-from .models import User, Complaint, Reservation
+from .models import User, Complaint, Reservation, Invoice
 
 class LoginForm(forms.Form):
     username_or_email = forms.CharField(label='Username / Email', max_length=50)
@@ -95,3 +95,13 @@ class ReservationForm(forms.ModelForm):
         super(ReservationForm, self).__init__(*args, **kwargs)
         for field in self.fields:
             self.fields[field].widget.attrs.update({"class": "form-control"})
+
+
+class TopUpForm(forms.ModelForm):
+    class Meta:
+        model = Invoice
+        fields = ['amount']
+
+    def __init__(self, *args, **kwargs):
+        super(TopUpForm, self).__init__(*args, **kwargs)
+        self.fields['amount'].widget.attrs.update({'class': 'form-control'})

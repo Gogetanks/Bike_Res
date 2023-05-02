@@ -31,3 +31,8 @@ class ComplaintAdmin(admin.ModelAdmin):
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
     list_filter = ['user']
+
+@admin.register(Invoice)
+class InvoiceAdmin(admin.ModelAdmin):
+    list_display = ['id', 'user', 'created_on', 'paid_on', 'due_date', 'status', 'paid_via', 'comment']
+    list_filter = ['created_on', 'user', 'status']

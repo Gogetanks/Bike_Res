@@ -19,3 +19,13 @@ class ComplaintStatus(Enum):
     @classmethod
     def choices(cls):
         return ((item.name, item.value) for item in cls)
+
+class InvoiceStatus(Enum):
+    UNPAID = 'Unpaid'
+    PAID = 'Paid'
+    CANCELED = 'Canceled'
+    EXPIRED = 'Expired'
+
+    @classmethod
+    def choices(cls):
+        return ((item.name, item.value) for item in cls)
