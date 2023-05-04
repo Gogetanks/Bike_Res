@@ -17,6 +17,7 @@ def validate_positive_number(value):
 
 class User(AbstractUser):
     email = models.EmailField(_('email address'), unique=True)
+    credit = models.DecimalField(max_digits=8, decimal_places=2, default=0)
 
     def is_worker(self):
         return self.groups.filter(name='worker').exists()
@@ -42,10 +43,10 @@ class Bike(models.Model):
     name = models.CharField(max_length=255)
     year = models.PositiveSmallIntegerField(default=2000)
     owner = models.CharField(max_length=255, default='admin')
-    description = models.TextField()
+    description = models.TextField(null=True, blank=True)
     image = models.ImageField(upload_to='bikes/')
     slug = models.SlugField(max_length=255)
-    price = models.DecimalField(max_digits=4, decimal_places=2)
+    price = models.DecimalField(max_digits=8, decimal_places=2)
     in_stock = models.BooleanField(default=True)
     is_featured = models.BooleanField(default=False)
 
@@ -82,7 +83,7 @@ class Complaint(models.Model):
     class Meta:
         ordering = ['-lastUpdate']
 
-    def __str__(self):
+    def __str__(self):  
         return self.customer.username + ' (' + str(self.id) + ')'
 
 
