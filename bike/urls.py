@@ -23,6 +23,7 @@ path('topup_account/', views.topup_account_request, name='topup_account'),
     path('deactivate-user/<int:user_id>/', views.deactivate_user, name='deactivate_user'),
     path('delete-user/<int:user_id>/', views.delete_user, name='delete_user'),
 
+    # bikes
     path('about/', views.about, name='about'),
     path('bikes/', views.bike_list, name='bike_list'),
     path('bikes/<str:slug>/', views.bike_detail, name='bike_detail'),

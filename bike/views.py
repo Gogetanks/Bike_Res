@@ -8,7 +8,7 @@ from django.urls import reverse_lazy
 
 from .enums import ComplaintStatus, InvoiceStatus
 from .forms import LoginForm, RegisterForm, EditProfileForm, ComplaintForm, ReservationForm, TopUpForm
-from .models import User, Complaint, Comment, Bike, Category, Invoice
+from .models import User, Complaint, Comment, Bike, Category, Invoice, Reservation
 from django.utils.timezone import now
 
 # ----- #
@@ -295,6 +295,7 @@ def search(request):
 
 class ReserveBikeView(FormView):
     template_name = 'reservation.html'
+    model = Reservation
     form_class = ReservationForm
     success_url = reverse_lazy('home')
 

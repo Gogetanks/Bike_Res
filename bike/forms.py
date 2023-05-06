@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth import authenticate
 from django.core.validators import ValidationError
 from django.contrib.auth.forms import UserCreationForm
+from django_flatpickr.widgets import DateTimePickerInput
 from .models import User, Complaint, Reservation, Invoice
 
 class LoginForm(forms.Form):
@@ -90,6 +91,10 @@ class ReservationForm(forms.ModelForm):
     class Meta:
         model = Reservation
         fields = ['bike', 'requestDate', 'endDate']
+        widgets = { 
+            'requestDate': DateTimePickerInput(),
+            'endDate': DateTimePickerInput(),
+        }
 
     def __init__(self, *args, **kwargs):
         super(ReservationForm, self).__init__(*args, **kwargs)
