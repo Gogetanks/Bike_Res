@@ -3,25 +3,33 @@
 {% load static %}
 
 {% block content %}
-    <h3>{{ bike.category }} {{ bike.name }}, {{ bike.year }}</h3>
-    <div class="d-block m-3">
-        <div class="rounded p-3" style="max-width: 30%; background-color: #f1f1f1;">
-            {% if bike.description %}
-            <div>{{ bike.description|linebreaks }}</div>
-            {% endif %}
-            <div>Price: {{ bike.price }} PLN</div>
-            {% if bike.image %}
-            <img src={{ bike.image.url }} height="350" alt='{{ bike.name }}'/>
-            {% endif %}
-
-            <div>Category: {{ bike.category }}</div>
-            <div>Year: {{ bike.year }}</div>
-            <div>Owner: {{ bike.owner }}</div>
-            <div>In stock: {{ bike.in_stock }}</div>
-
-            <form action="{% url 'reserve' bike_id=bike.id %}">
-    <input type="submit" value="Reserve" />
-</form>
+<div class="container-fluid my-5">
+    <div class="row justify-content-center">
+        <div class="row no-gutters">
+            <div class="col-md-6">
+                {% if bike.image %}
+                <img src={{ bike.image.url }} class="card-img rounded-left" alt='{{ bike.name }}'/>
+                {% endif %}
+            </div>
+            <div class="col-md-6">
+                <div class="card-body">
+                    <h3 class="card-title">{{ bike.category }} {{ bike.name }}, {{ bike.year }}</h3>
+                    {% if bike.description %}
+                    <p class="card-text">{{ bike.description|linebreaks }}</p>
+                    {% endif %}
+                    <h5 class="card-text text-primary mt-3">Price: {{ bike.price }} PLN</h5>
+                    <ul class="list-unstyled mt-4">
+                        <li><strong>Category:</strong> {{ bike.category }}</li>
+                        <li><strong>Year:</strong> {{ bike.year }}</li>
+                        <li><strong>Owner:</strong> {{ bike.owner }}</li>
+                        <li><strong>In stock:</strong> {{ bike.in_stock }}</li>
+                    </ul>
+                    <form action="{% url 'reserve' bike_id=bike.id %}">
+                        <button type="submit" class="btn btn-primary mt-4 btn-block">Reserve</button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
+</div>
 {% endblock %}
