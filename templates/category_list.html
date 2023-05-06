@@ -1,6 +1,16 @@
 {% extends 'base.html' %}
 {% block content %}
-{% for category in categories %}
-   <h2><a href="{{ category.slug }}">{{ category.name }}</a></h2>
-{% endfor %}
+<div class="container">
+   <div class="row">
+     <div class="col-md-12">
+       <ul class="list-group">
+         {% for category in categories %}
+         <li class="list-group-item">
+           <h2 class="mb-0"><a href="{{ category.slug }}">{{ category.name }}</a></h2>
+         </li>
+         {% endfor %}
+       </ul>
+     </div>
+   </div>
+ </div>
 {% endblock %}
