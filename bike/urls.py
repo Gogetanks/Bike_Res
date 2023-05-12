@@ -8,7 +8,7 @@ urlpatterns = [
     path('logout/', views.logout_request, name='logout'),
     path('register/', views.register_request, name='register'),
     path('profile/', views.profile_request, name='profile'),
-path('topup_account/', views.topup_account_request, name='topup_account'),
+    path('topup_account/', views.topup_account_request, name='topup_account'),
     path('edit_profile/', views.edit_profile_request, name='edit_profile'),
     path('delete_account/', views.delete_account_request, name='delete_account'),
     # worker pages
@@ -38,6 +38,8 @@ path('topup_account/', views.topup_account_request, name='topup_account'),
     path('complaints/new/', views.new_complaint_request, name='new_complaint'),
     path('complaints/unattached/', views.unattached_complaints_request, name='unattached_complaints'),
     path('complaints/take/<uuid:complaint_id>/', views.take_complaint_request, name='take_complaint'),
+    path('complaints/solve/<uuid:complaint_id>/', views.solve_complaint_request, name='solve_complaint'),
+    path('complaints/reopen/<uuid:complaint_id>/', views.reopen_complaint_request, name='reopen_complaint'),
 
     # payments
     path('invoices/', views.invoices_request, name='invoices'),

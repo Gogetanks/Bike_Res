@@ -26,7 +26,7 @@ def get_worker(request):
     if not user:
         return None
     if not user.is_worker():
-        messages.error(request, 'You are nor authorize to perform this action.')
+        messages.error(request, 'You are not authorized to perform this action.')
         return None
     return User.objects.get(username=request.user.username)
 
@@ -47,9 +47,6 @@ def profile_request(request):
     user = get_user(request)
     if not user:
         return redirect('login')
-
-    if user.is_worker():
-        return render(request, 'accounts/worker_profile.html', context={'user': user})
 
     return render(request, 'accounts/base_profile.html', context={'user': user})
 
@@ -332,6 +329,10 @@ def complaints_request(request):
         return render(request, 'complaints/base_complaints.html',
                       {'complaints': Complaint.objects.filter(worker=user)})
 
+    if user.is_mechanic():
+        return render(request, 'complaints/base_complaints.html',
+                      {'complaints': Complaint.objects.filter(mechanic=user)})
+
     return render(request, 'complaints/customer_complaints.html',
                   {'complaints': Complaint.objects.filter(customer=user)})
 
@@ -350,15 +351,37 @@ def complaint_request(request, complaint_id):
     if not user:
         return redirect('login')
 
+    complaint = Complaint.objects.get(id=complaint_id)
+
+    if request.method == 'POST':
+        if 'newMessage' in request.POST:
+            newMessage = request.POST['newMessage']
+            if newMessage:
+                Comment.objects.create(content=newMessage, complaint=complaint, user=user)
+
+        if 'newMechanic' in request.POST:
+            print(request.POST['newMechanic'])
+            newMechanic = User.objects.get(id=request.POST['newMechanic'])
+            complaint.mechanic = newMechanic
+            complaint.save()
+            messages.success(request, 'Mechanic ' + newMechanic.username + ' has been added to the chat.')
+
     if (user.is_worker() and not Complaint.objects.filter(worker=user, id=complaint_id).exists())\
             and not Complaint.objects.filter(customer=user, id=complaint_id).exists():
         messages.error(request, 'Invalid complaint')
         return redirect('complaints')
 
-    complaint = Complaint.objects.get(id=complaint_id)
-    return render(request, 'complaints/complaint.html',
+    if user.is_worker():
+        return render(request, 'complaints/worker_complaint.html',
+                      {'complaint': complaint,
+                       'comments': Comment.objects.filter(complaint=complaint),
+                       'user': user,
+                       'mechanics': User.objects.filter(groups__name='mechanic')})
+
+    return render(request, 'complaints/base_complaint.html',
                   {'complaint': complaint,
-                   'comments': Comment.objects.filter(complaint=complaint)})
+                   'comments': Comment.objects.filter(complaint=complaint),
+                   'user': user})
 
 
 def new_complaint_request(request):
@@ -389,6 +412,26 @@ def take_complaint_request(request, complaint_id):
         complaint.save()
 
     return redirect('complaints')
+
+
+def solve_complaint_request(request, complaint_id):
+    worker = get_worker(request)
+    if worker:
+        complaint = Complaint.objects.get(id=complaint_id)
+        complaint.status = ComplaintStatus.SOLVED.name
+        complaint.save()
+
+    return redirect('complaint', complaint_id)
+
+
+def reopen_complaint_request(request, complaint_id):
+    user = get_user(request)
+    if user:
+        complaint = Complaint.objects.get(id=complaint_id)
+        complaint.status = ComplaintStatus.OPENED.name
+        complaint.save()
+
+    return redirect('complaint', complaint_id)
 
 
 def payment(request):
