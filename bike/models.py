@@ -29,6 +29,7 @@ class User(AbstractUser):
 class Category(models.Model):
     name = models.CharField(max_length=255, db_index=True)
     slug = models.SlugField(max_length=255, unique=True)
+    image = models.ImageField(upload_to='categories/')
 
     class Meta:
         verbose_name_plural = 'Categories'
