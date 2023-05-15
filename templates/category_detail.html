@@ -17,7 +17,7 @@
                     </div>
                 </div>
                 <div class="col-md-2 d-flex justify-content-center align-items-center">
-                    <a href="{{bike.slug}}" class="btn btn-primary btn-sm">Rent Now</a>
+                    <a href="{% url 'bike_detail' slug=bike.slug %}" class="btn btn-primary btn-sm">Rent Now</a>
                 </div>
             </div>
         </div>
