@@ -17,7 +17,7 @@
                     {% if bike.description %}
                     <p class="card-text">{{ bike.description|linebreaks }}</p>
                     {% endif %}
-                    <h5 class="card-text text-primary mt-3">Price: {{ bike.price }} PLN</h5>
+                    <h5 class="card-text text-primary mt-3">Price: ${{ bike.price }}/day</h5>
                     <ul class="list-unstyled mt-4">
                         <li><strong>Category:</strong> {{ bike.category }}</li>
                         <li><strong>Year:</strong> {{ bike.year }}</li>

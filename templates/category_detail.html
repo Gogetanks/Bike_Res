@@ -11,8 +11,9 @@
                 </div>
                 <div class="col-md-6 align-self-center">
                     <div class="card-body p-1">
-                        <h6 class="card-title mb-0"><a href="{{bike.slug}}">{{ bike.name }}</a></h6>
-                        <p class="card-text mb-0">$ {{ bike.price }}/day</p>
+                        <h6 class="card-title mb-0">
+                            <a href="{% url 'bike_detail' slug=bike.slug %}" >{{ bike.name }}</a>
+                            <p class="card-text mb-0">$ {{ bike.price }}/day</p> </h6>
                     </div>
                 </div>
                 <div class="col-md-2 d-flex justify-content-center align-items-center">

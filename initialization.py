@@ -52,22 +52,16 @@ for group in Group.objects.all():
 
 
 # add bike categories
-standard = Category(name='Standard', slug='standard')
+standard = Category(name='Sports Bike', slug='sports-bikes')
 standard.save()
-cruiser = Category(name='Cruiser', slug='cruiser')
+cruiser = Category(name='Cruiser Bikes', slug='cruiser-bikes')
 cruiser.save()
-sport = Category(name='Sport', slug='sport')
-sport.save()
-chopper = Category(name='Chopper', slug='chopper')
+chopper = Category(name='Electric Bikes', slug='electric-bikes')
 chopper.save()
-scooter = Category(name='Scooter', slug='scooter')
+scooter = Category(name='Scooters', slug='scooters')
 scooter.save()
-off_road = Category(name='Off-Road', slug='off-road')
+off_road = Category(name='Dirt Bikes', slug='dirt-bikes')
 off_road.save()
-tricycle = Category(name='Tricycle', slug='tricycle')
-tricycle.save()
-touring = Category(name='Touring', slug='touring')
-touring.save()
 
 print('Categories created:')
 for cat in Category.objects.all():
