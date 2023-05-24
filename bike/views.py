@@ -94,7 +94,7 @@ def register_request(request):
         if form.is_valid():
             user = form.save()
             user.save()
-
+            messages.success(request, "Your account has been successfully created.")
             return redirect('login')
     else:
         form = RegisterForm()

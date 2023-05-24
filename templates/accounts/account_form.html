@@ -8,15 +8,18 @@
 
 {% block content %}
 	<div class="container">
-		<h3>{% block form-title %}{% endblock %}</h3>
+		<h3 class="my-4">{% block form-title %}{% endblock %}</h3>
 		<div class="bdcontainer-sm">
-			{{ form.non_field_errors }}
+		{% if form.non_field_errors %}
+			<div class="alert alert-danger p-2">{{ form.non_field_errors.as_text }}</div>
+		{% endif %}
 			<form method="post">
 				{% csrf_token %}
-				{{ form.non_field_errors }}
 				{% for field in form %}
 					<div class="form-outline mb-4">
-						{{ field.errors }}
+						{% if field.errors %}
+							<div class="text-danger my-2">{{ field.errors.as_text }}</div>
+						{% endif %}
 						<label class="label-control">{{ field.label }}</label>
 						{{ field }}
 					</div>
