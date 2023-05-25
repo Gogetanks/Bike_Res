@@ -357,7 +357,9 @@ def complaint_request(request, complaint_id):
         if 'newMessage' in request.POST:
             newMessage = request.POST['newMessage']
             if newMessage:
-                Comment.objects.create(content=newMessage, complaint=complaint, user=user)
+                newComment = Comment.objects.create(content=newMessage, complaint=complaint, user=user)
+                complaint.lastUpdate = newComment.time
+                complaint.save()
 
         if 'newMechanic' in request.POST:
             print(request.POST['newMechanic'])

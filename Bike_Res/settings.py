@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_flatpickr',
+    'django_crontab',
     'bike.apps.BikeConfig',
 ]
 
@@ -134,3 +135,9 @@ AUTHENTICATION_BACKENDS = ['bike.backend.EmailBackend']
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'uploads'
+
+# Cron jobs run every day at 3 a.m.
+CRONJOBS = [
+    ('0 3 * * *', 'bike.cron.close_complaints'),
+    ('0 3 * * *', 'bike.cron.remove_complaints')
+]

@@ -24,8 +24,9 @@
 									{% for complaint in complaints %}
 										{% if complaint.status != 'CLOSED' or complaint.worker == user %}
 											<tr class="
-												{% if complaint.status == 'UNATTACHED' %} table-secondary
+												{% if complaint.status == 'UNATTACHED' %} table-light
 												{% elif complaint.status == 'OPENED' %} table-warning
+												{% elif complaint.status == 'CLOSED' %} table-secondary
 												{% else %} table-success
 												{% endif %}">
 												<td>{{ forloop.counter }}</td>
