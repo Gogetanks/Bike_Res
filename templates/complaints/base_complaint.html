@@ -10,7 +10,7 @@
 	<div class="bg-light bg-gradient p-3">
 		{% for comment in comments %}
 			{% if comment.user == user %}
-				<div class="d-block m-3 w-50 mx-auto d-flex justify-content-start">
+				<div class="d-block m-3 w-50 mx-auto d-flex justify-content-end">
 					<div class="rounded p-3" style="max-width: 40%; background-color: #f1f1f1">
 						<div><b>{{ comment.user.username }}:</b></div>
 						<div>{{ comment.content }}</div>
@@ -18,7 +18,7 @@
 					</div>
 				</div>
 			{% else %}
-				<div class="d-block m-3 w-50 mx-auto d-flex justify-content-end">
+				<div class="d-block m-3 w-50 mx-auto d-flex justify-content-start">
 					<div class="rounded p-3" style="max-width: 40%; background-color:
 						{% if complaint.customer == comment.user %} paleturquoise
 						{% elif complaint.worker == comment.user %} moccasin

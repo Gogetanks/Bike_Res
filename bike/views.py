@@ -15,6 +15,7 @@ from django.utils.timezone import now
 # ----- #
 # UTILS #
 # ----- #
+
 def get_user(request):
     if not request.user.is_authenticated:
         messages.error(request, 'You are must login to perform some actions.')
@@ -26,7 +27,16 @@ def get_worker(request):
     user = get_user(request)
     if not user:
         return None
-    if not user.is_worker():
+    if not user.is_worker() and not user.is_mechanic():
+        messages.error(request, 'You are not authorized to perform this action.')
+        return None
+    return User.objects.get(username=request.user.username)
+
+def get_mechanic(request):
+    user = get_user(request)
+    if not user:
+        return None
+    if not user.is_mechanic() and not user.is_worker():
         messages.error(request, 'You are not authorized to perform this action.')
         return None
     return User.objects.get(username=request.user.username)
@@ -126,7 +136,16 @@ def topup_account_request(request):
         form = TopUpForm()
     return render(request, 'accounts/topup_account.html', {'form': form})
 
+# MECHANIC
 
+def mechanic_main_request(request):
+    user = get_user(request)
+    if not user:
+        return redirect('login')
+
+    if user.is_mechanic():
+        return render(request, 'mechanic/mechanic_main.html')
+    return redirect('home')
 
 # -------- #
 #  WORKER  #
@@ -365,7 +384,8 @@ def complaints_request(request):
 
 def unattached_complaints_request(request):
     worker = get_worker(request)
-    if not worker:
+    mechanic = get_mechanic(request)
+    if not worker or not mechanic:
         return redirect('complaints')
 
     return render(request, 'complaints/unattached_complaints.html',
@@ -406,6 +426,12 @@ def complaint_request(request, complaint_id):
                        'user': user,
                        'mechanics': User.objects.filter(groups__name='mechanic')})
 
+    if user.is_mechanic():
+        return render(request, 'complaints/worker_complaint.html',
+               {'complaint': complaint,
+                'comments': Comment.objects.filter(complaint=complaint),
+                'user': user})
+
     return render(request, 'complaints/base_complaint.html',
                   {'complaint': complaint,
                    'comments': Comment.objects.filter(complaint=complaint),
@@ -433,18 +459,24 @@ def new_complaint_request(request):
 
 def take_complaint_request(request, complaint_id):
     worker = get_worker(request)
+    mechanic = get_mechanic(request)
     if worker:
         complaint = Complaint.objects.get(id=complaint_id)
         complaint.worker = worker
         complaint.status = ComplaintStatus.OPENED.name
         complaint.save()
-
+    if mechanic:
+        complaint = Complaint.objects.get(id=complaint_id)
+        complaint.mechanic = mechanic
+        complaint.status = ComplaintStatus.OPENED.name
+        complaint.save()
     return redirect('complaints')
 
 
 def solve_complaint_request(request, complaint_id):
     worker = get_worker(request)
-    if worker:
+    mechanic = get_mechanic(request)
+    if worker or mechanic:
         complaint = Complaint.objects.get(id=complaint_id)
         complaint.status = ComplaintStatus.SOLVED.name
         complaint.save()

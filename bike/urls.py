@@ -11,6 +11,9 @@ urlpatterns = [
     path('topup_account/', views.topup_account_request, name='topup_account'),
     path('edit_profile/', views.edit_profile_request, name='edit_profile'),
     path('delete_account/', views.delete_account_request, name='delete_account'),
+
+    path('mechanic/', views.mechanic_main_request, name='mechanic'),
+
     # worker pages
     path('worker/', views.worker_main_request, name='worker'),
     path('worker/account_management', views.account_management_request, name='account_management'),

@@ -22,7 +22,7 @@
 								</thead>
 								<tbody>
 									{% for complaint in complaints %}
-										{% if complaint.status != 'CLOSED' or complaint.worker == user %}
+										{% if complaint.status != 'CLOSED' or complaint.worker == user or complaint.mechanic == user %}
 											<tr class="
 												{% if complaint.status == 'UNATTACHED' %} table-light
 												{% elif complaint.status == 'OPENED' %} table-warning
