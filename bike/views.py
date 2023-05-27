@@ -4,7 +4,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import Group
 from django.contrib import messages
 from django.views.generic.edit import FormView
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
+from django.views.generic import DetailView
 
 from .enums import ComplaintStatus, InvoiceStatus
 from .forms import LoginForm, RegisterForm, EditProfileForm, ComplaintForm, ReservationForm, TopUpForm
@@ -314,8 +315,33 @@ class ReserveBikeView(FormView):
         bike = form.cleaned_data['bike']
         bike.available = False
         bike.save()
-        return super().form_valid(form)
+        # Calculate the total price
+        start_date = reservation.requestDate
+        end_date = reservation.endDate
+        price = bike.price
+        total_price = price * (end_date - start_date).days
 
+        # Redirect to the reservation summary page with the necessary data
+        return redirect(reverse('reservation_summary', kwargs={'pk': reservation.pk}))
+
+
+class ReservationSummaryView(DetailView):
+    model = Reservation
+    template_name = 'reservation_summary.html'
+    context_object_name = 'reservation'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        # Calculate duration in days and total price
+        reservation = self.object
+        duration = (reservation.endDate - reservation.requestDate).days
+        total_price = duration * reservation.bike.price
+
+        context['duration'] = duration
+        context['total_price'] = total_price
+
+        return context
 
 # ---------- #
 # COMPLAINTS #

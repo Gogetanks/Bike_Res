@@ -32,6 +32,7 @@ urlpatterns = [
     path('search/', views.search, name='search'),
 
     path('reserve/<uuid:bike_id>', views.ReserveBikeView.as_view(), name='reserve'),
+    path('reservation/<uuid:pk>/summary/', views.ReservationSummaryView.as_view(), name='reservation_summary'),
     path('payment/', views.payment, name='payment'),
     path('complaints/', views.complaints_request, name='complaints'),
     path('complaints/<uuid:complaint_id>/', views.complaint_request, name='complaint'),

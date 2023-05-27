@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Reservation Summary</h1>
+
+  <div class="row">
+    <div class="col-md-6">
+      <h2>Reservation Details</h2>
+      <p><strong>Bike:</strong> {{ reservation.bike }}</p>
+      <p><strong>Request Date:</strong> {{ reservation.requestDate }}</p>
+      <p><strong>End Date:</strong> {{ reservation.endDate }}</p>
+
+      <h2>Total Price</h2>
+      <p><strong>Price per Day:</strong> ${{ reservation.bike.price }}</p>
+      <p><strong>Duration:</strong> {{ duration }} Days</p>
+      <p><strong>Total Price:</strong> ${{ total_price }}</p>
+
+      <!-- You can include additional information or formatting as needed -->
+    </div>
+
+
+    <div class="col-md-6">
+      <img src="{{ reservation.bike.image.url }}" alt="{{ reservation.bike }}" class="img-fluid">
+    </div>
+  </div>
+
+    <a href="{{bike.slug}}" class="btn btn-primary btn-sm">Pay Now</a>
+
+{% endblock %}
