@@ -36,3 +36,8 @@ class CommentAdmin(admin.ModelAdmin):
 class InvoiceAdmin(admin.ModelAdmin):
     list_display = ['id', 'user', 'created_on', 'paid_on', 'due_date', 'status', 'paid_via', 'comment']
     list_filter = ['created_on', 'user', 'status']
+
+@admin.register(Location)
+class InvoiceAdmin(admin.ModelAdmin):
+    list_display = ['id', 'bike', 'timestamp', 'latitude', 'longitude', 'altitude', 'speed', 'track', 'climb', 'time', 'error_horizontal', 'error_vertical']
+    list_filter = ['bike', 'speed', 'time']
