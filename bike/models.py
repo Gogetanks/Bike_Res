@@ -117,3 +117,20 @@ class Invoice(models.Model):
 
     def __str__(self):
         return 'Invoice #' + str(self.id) + ' (' + self.user.username + ')'
+
+
+class Location(models.Model):
+    bike = models.ForeignKey(Bike, related_name='bike', on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(default=now)
+    latitude = models.FloatField(max_digits=12, decimal_places=9)  #pos[0], float
+    longitude = models.FloatField(max_digits=12, decimal_places=9) #pos[1], float
+    altitude = models.FloatField(max_digits=7, decimal_places=1) #alt, float
+    speed  = models.FloatField(max_digits=7, decimal_places=3) #speed, float
+    track = models.IntegerField()#track, int
+    climb  = models.FloatField(max_digits=6, decimal_places=2) #climb, float
+    time  = models.DateTimeField() #time, datetime.datetime
+    error_horizontal = models.FloatField(max_digits=6, decimal_places=3) #precision[0], float
+    error_vertical = models.FloatField(max_digits=6, decimal_places=3) #precision[1], float
+
+    def __str__(self):
+        return 'Location #' + str(self.id) + ' (' + self.bike.name + ')'
