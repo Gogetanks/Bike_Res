@@ -151,14 +151,10 @@ def mechanic_main_request(request):
 #  WORKER  #
 # -------- #
 def worker_main_request(request):
-    user = get_user(request)
-    if not user:
+    if not get_worker(request):
         return redirect('login')
 
-    if user.is_worker():
-        return render(request, 'worker/worker_main.html')
-    return redirect('home')
-
+    return render(request, 'worker/worker_main.html')
 
 def account_management_request(request):
     user = get_user(request)
@@ -258,6 +254,13 @@ def delete_user(request, user_id):
         user = User.objects.get(id=user_id)
         user.delete()
     return redirect('account_management')
+
+def reservations_request(request):
+    if not get_worker(request):
+        return redirect('login')
+
+    reservations = Reservation.objects.all()
+    return render(request, 'worker/reservations.html', {'reservations': reservations})
 
 # ----- #
 # ABOUT #

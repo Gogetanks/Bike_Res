@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-+_ddfa1h3r=j3%pw!c6p&uu_@+!6@)p(17^04&pvuwb$-ed%33
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["5.45.123.209"]
+ALLOWED_HOSTS = ["5.45.123.209", "127.0.0.1"]
 
 
 # Application definition
@@ -77,19 +77,19 @@ WSGI_APPLICATION = 'Bike_Res.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-#DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.db.backends.sqlite3',
-#        'NAME': BASE_DIR / 'db.sqlite3',
-#    }
-#}
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-	'OPTIONS': {"read_default_file": "Bike_Res/my.cnf"} 
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.mysql',
+#	'OPTIONS': {"read_default_file": "Bike_Res/my.cnf"}
+#    }
+#}
 
 # Template for my.cnf
 #[client]

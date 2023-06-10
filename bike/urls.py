@@ -21,6 +21,7 @@ urlpatterns = [
     path('worker/invoice_management/worker_pay_invoice/<int:invoice_id>', views.worker_pay_invoice, name='worker_pay_invoice'),
     path('worker/invoice_management/cancel_invoice/<int:invoice_id>', views.cancel_invoice, name='cancel_invoice'),
     path('worker/invoice_management/delete_invoice/<int:invoice_id>', views.delete_invoice, name='delete_invoice'),
+    path('worker/reservations', views.reservations_request, name='reservations'),
 
     # worker's account management
     path('deactivate-user/<int:user_id>/', views.deactivate_user, name='deactivate_user'),
