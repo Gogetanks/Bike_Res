@@ -64,6 +64,7 @@ class Reservation(models.Model):
     bike = models.ForeignKey(Bike, on_delete=models.CASCADE)
     requestDate = models.DateTimeField(default=now)
     endDate = models.DateTimeField()
+    use_store_credit = models.BooleanField(default=False)
     status = models.CharField(
         _('status'), default=ReservationStatus.PENDING.name, choices=ReservationStatus.choices(), max_length=32
     )

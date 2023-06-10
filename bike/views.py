@@ -7,10 +7,11 @@ from django.views.generic.edit import FormView
 from django.urls import reverse, reverse_lazy
 from django.views.generic import DetailView
 
-from .enums import ComplaintStatus, InvoiceStatus
+from .enums import ComplaintStatus, InvoiceStatus, ReservationStatus
 from .forms import LoginForm, RegisterForm, EditProfileForm, ComplaintForm, ReservationForm, TopUpForm
 from .models import User, Complaint, Comment, Bike, Category, Invoice, Reservation
 from django.utils.timezone import now
+from decimal import Decimal
 
 # ----- #
 # UTILS #
@@ -499,7 +500,34 @@ def reopen_complaint_request(request, complaint_id):
 
 def payment(request):
     return render(request, 'payment.html')
+def make_credit_payment(request, reservation_id):
+    if not request.user.is_authenticated:
+        return redirect('login')
 
+    reservation = get_object_or_404(Reservation, id=reservation_id)
+    user = get_user(request)
+    duration = (reservation.endDate - reservation.requestDate).days
+    total_price = duration * reservation.bike.price
+
+    if reservation.user == user:
+        use_store_credit = request.POST.get('use_store_credit', True)
+
+        if use_store_credit:
+            if user.credit >= total_price:
+                # Deduct the price from the user's store credit
+                user.credit -= reservation.bike.price
+                user.save()
+                # Update the reservation status as paid
+                reservation.status = ReservationStatus.FINISHED.name
+                reservation.save()
+                messages.success(request, 'Reservation payment successful with store credit.')
+                return redirect('profile')
+            else:
+                reservation.delete()
+                messages.error(request, 'Insufficient store credit. Please choose another payment method.')
+                return redirect('topup_account')
+
+    return redirect('profile')
 
 # ---------- #
 #  INVOICES  #

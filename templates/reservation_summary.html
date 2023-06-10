@@ -24,6 +24,9 @@
     </div>
   </div>
 
-    <a href="{{bike.slug}}" class="btn btn-primary btn-sm">Pay Now</a>
+   <div class="payment-options">
+  <p>Select Payment Method:</p>
+  <a class="btn btn-primary" href="{% url 'make_credit_payment' reservation_id=reservation.id %}">Card</a>
+</div>
 
 {% endblock %}
