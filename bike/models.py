@@ -136,11 +136,11 @@ class Location(models.Model):
     def __str__(self):
         return 'Location #' + str(self.id) + ' (' + self.bike.name + ')'
 
-#class BikeStatus(models.Model):
-#    bike = models.ForeignKey(Bike, related_name='bike', on_delete=models.CASCADE)
-#    time = models.DateTimeField(default=now)
-#    is_online = models.BooleanField()
-#    is_locked = models.BooleanField()
-#
-#    def __str__(self):
-#        return 'BikeStatus #' + str(self.id) + ' (' + self.bike.name + ')'
+class BikeStatus(models.Model):
+    bike = models.ForeignKey(Bike, on_delete=models.CASCADE)
+    time = models.DateTimeField(default=now)
+    is_online = models.BooleanField()
+    is_locked = models.BooleanField()
+
+    def __str__(self):
+        return 'BikeStatus #' + str(self.id) + ' (' + self.bike.name + ')'

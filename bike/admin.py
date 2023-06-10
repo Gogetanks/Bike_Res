@@ -38,6 +38,14 @@ class InvoiceAdmin(admin.ModelAdmin):
     list_filter = ['created_on', 'user', 'status']
 
 @admin.register(Location)
-class InvoiceAdmin(admin.ModelAdmin):
+class LocationAdmin(admin.ModelAdmin):
     list_display = ['id', 'bike', 'timestamp', 'latitude', 'longitude', 'altitude', 'speed', 'track', 'climb', 'time', 'error_horizontal', 'error_vertical']
     list_filter = ['bike', 'speed', 'time']
+
+@admin.register(BikeStatus)
+class BikeStatusAdmin(admin.ModelAdmin):
+    list_display = ['id', 'bike', 'time', 'is_online', 'is_locked']
+    list_filter = ['bike', 'time', 'is_online', 'is_locked']
+    class Meta:
+        verbose_name = 'status'
+        verbose_name_plural = 'status'
