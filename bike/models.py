@@ -51,6 +51,8 @@ class Bike(models.Model):
     in_stock = models.BooleanField(default=True)
     is_featured = models.BooleanField(default=False)
     ip_address = models.GenericIPAddressField(protocol='IPv4', null=True, blank=True)
+    latitude = models.FloatField(null=False, blank=False)  # pos[0], float
+    longitude = models.FloatField(null=False, blank=False)  # pos[1], float
 
     def __str__(self):
         return self.name

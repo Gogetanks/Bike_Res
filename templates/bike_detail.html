@@ -2,34 +2,115 @@
 
 {% load static %}
 
+{% block styles %}
+<style>
+    /* Restrict the map size */
+    #map {
+        width: 100px;
+        height: 100px;
+    }
+</style>
+
+{% endblock %}
+
 {% block content %}
 <div class="container-fluid my-5">
     <div class="row justify-content-center">
-        <div class="row no-gutters">
-            <div class="col-md-6">
-                {% if bike.image %}
-                <img src={{ bike.image.url }} class="card-img rounded-left" alt='{{ bike.name }}'/>
+        <div class="col-md-6">
+            {% if bike.image %}
+            <img src="{{ bike.image.url }}" class="card-img" alt="{{ bike.name }}"/>
+            {% endif %}
+        </div>
+        <div class="col-md-6">
+            <div class="card-body">
+                <h3 class="card-title">{{ bike.category }} {{ bike.name }}, {{ bike.year }}</h3>
+                {% if bike.description %}
+                <p class="card-text">{{ bike.description|linebreaks }}</p>
                 {% endif %}
+                <h5 class="card-text text-primary mt-3">Price: ${{ bike.price }}/day</h5>
+                <ul class="list-unstyled mt-4">
+                    <li><strong>Category:</strong> {{ bike.category }}</li>
+                    <li><strong>Year:</strong> {{ bike.year }}</li>
+                    <li><strong>Owner:</strong> {{ bike.owner }}</li>
+                    <li><strong>In stock:</strong> {{ bike.in_stock }}</li>
+                </ul>
             </div>
-            <div class="col-md-6">
-                <div class="card-body">
-                    <h3 class="card-title">{{ bike.category }} {{ bike.name }}, {{ bike.year }}</h3>
-                    {% if bike.description %}
-                    <p class="card-text">{{ bike.description|linebreaks }}</p>
-                    {% endif %}
-                    <h5 class="card-text text-primary mt-3">Price: ${{ bike.price }}/day</h5>
-                    <ul class="list-unstyled mt-4">
-                        <li><strong>Category:</strong> {{ bike.category }}</li>
-                        <li><strong>Year:</strong> {{ bike.year }}</li>
-                        <li><strong>Owner:</strong> {{ bike.owner }}</li>
-                        <li><strong>In stock:</strong> {{ bike.in_stock }}</li>
-                    </ul>
-                    <form action="{% url 'reserve' bike_id=bike.id %}">
-                        <button type="submit" class="btn btn-primary mt-4 btn-block">Reserve</button>
-                    </form>
-                </div>
-            </div>
+
         </div>
     </div>
 </div>
+
+<link id="cf7-map-field-leaflet-css" rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+
+<script id="cf7-map-field-leaflet-js" src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<div style="position:relative">
+   <div id="CF7MapFieldDiv" style="height: 300px; width: 400px; left: calc(50% - 200px);"></div>
+   <span style="position:absolute;right:55px;bottom:20px;font: 12px Arial,Helvetica,sans-serif;background-color: rgba(255, 255, 255, 0.698);padding:2px 7px;z-index: 1000;" >
+        Location: <span id="CF7MapMarkerAt">Lat: {{ bike.latitude }}, Long: {{ bike.longitude }}</span>
+    </span>
+</div>
+<script>
+var map;
+var marker;
+var locationLatitude = {{ bike.latitude }};
+var locationLongitude = {{ bike.longitude }};
+
+
+function onMapClick() {
+map.removeLayer(initMarker);
+    if (marker === undefined) {
+        var markerIcon = L.icon({
+            iconUrl: 'http://cdn.leafletjs.com/leaflet-0.4.4/images/marker-icon.png',
+            shadowUrl: 'http://cdn.leafletjs.com/leaflet-0.4.4/images/marker-shadow.png',
+            iconSize: [25, 41],
+            shadowSize: [41, 41],
+            shadowAnchor: [15, 41]
+        });
+        marker = L.marker([locationLatitude, locationLongitude], {
+            icon: markerIcon,
+            draggable: false
+        }).addTo(map);
+
+    } else {
+        marker.setLatLng([locationLatitude, locationLongitude]);
+    }
+
+
+}
+ var initMarker = {};
+function initmap() {
+    // set up the map
+    map = new L.Map('CF7MapFieldDiv');
+    // create the tile layer with correct attribution
+    var mapUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+    var mapAttrib = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+    var mapTile = new L.TileLayer(mapUrl, {
+        minZoom: 2,
+        maxZoom: 18,
+        attribution: mapAttrib
+    });
+    map.addLayer(mapTile);
+    // set default view (London)
+    //map.setView(new L.LatLng(51.501, -0.105), 8);
+map.setView(new L.LatLng(locationLatitude, locationLongitude), 9);
+
+    initMarker = L.marker([locationLatitude, locationLongitude], {
+            iconUrl: 'http://cdn.leafletjs.com/leaflet-0.4.4/images/marker-icon.png',
+            shadowUrl: 'http://cdn.leafletjs.com/leaflet-0.4.4/images/marker-shadow.png',
+            iconSize: [25, 41],
+            shadowSize: [41, 41],
+            shadowAnchor: [15, 41],
+            draggable: false
+    }).addTo(this.map);
+
+    // add events
+    map.on('click', onMapClick);
+
+}
+initmap();
+</script>
+
+    <form action="{% url 'reserve' bike_id=bike.id %}">
+                <button type="submit" class="btn btn-primary mt-4 btn-block">Reserve</button>
+            </form>
 {% endblock %}
