@@ -50,6 +50,7 @@ class Bike(models.Model):
     price = models.DecimalField(max_digits=8, decimal_places=2)
     in_stock = models.BooleanField(default=True)
     is_featured = models.BooleanField(default=False)
+    ip_address = models.GenericIPAddressField(protocol='IPv4', null=True, blank=True )
 
     def __str__(self):
         return self.name
@@ -134,3 +135,12 @@ class Location(models.Model):
 
     def __str__(self):
         return 'Location #' + str(self.id) + ' (' + self.bike.name + ')'
+
+#class BikeStatus(models.Model):
+#    bike = models.ForeignKey(Bike, related_name='bike', on_delete=models.CASCADE)
+#    time = models.DateTimeField(default=now)
+#    is_online = models.BooleanField()
+#    is_locked = models.BooleanField()
+#
+#    def __str__(self):
+#        return 'BikeStatus #' + str(self.id) + ' (' + self.bike.name + ')'
