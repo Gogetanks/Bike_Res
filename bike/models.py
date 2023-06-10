@@ -50,7 +50,7 @@ class Bike(models.Model):
     price = models.DecimalField(max_digits=8, decimal_places=2)
     in_stock = models.BooleanField(default=True)
     is_featured = models.BooleanField(default=False)
-    ip_address = models.GenericIPAddressField(protocol='IPv4', null=True, blank=True )
+    ip_address = models.GenericIPAddressField(protocol='IPv4', null=True, blank=True)
 
     def __str__(self):
         return self.name

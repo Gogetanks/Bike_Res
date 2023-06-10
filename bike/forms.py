@@ -19,7 +19,6 @@ class LoginForm(forms.Form):
         username_or_email = self.data['username_or_email']
         password = self.data['password']
 
-        print(username_or_email, password)
         user = authenticate(username=username_or_email, password=password)
         if not user:
             user = authenticate(email=username_or_email, password=password)
