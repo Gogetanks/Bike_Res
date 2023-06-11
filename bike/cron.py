@@ -1,5 +1,5 @@
 from .enums import ComplaintStatus
-from .models import Complaint
+from .models import Complaint, Reservation, Bike
 from datetime import datetime
 
 def close_complaints():
@@ -18,3 +18,12 @@ def remove_complaints():
         # After 1 year of being CLOSED, we delete the complaint
         if (now - complaint.lastUpdate).days >= 365:
             complaint.delete()
+
+def close_reservation():
+    reservations = Reservation.objects.filter(status='FINISHED')
+    now = datetime.now()
+    for reservation in reservations:
+        bike = Bike.objects.get(id=reservation.bike.id)
+        # 1 day after the endDate, we set the bike in_stock
+        if (now - reservation.endDate).days >= 1:
+            bike.in_stock = True

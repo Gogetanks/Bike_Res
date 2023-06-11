@@ -372,6 +372,8 @@ def cancel_reservation_request(request, reservation_id):
         messages.error(request, 'You are not authorized to perform this action')
         return redirect('profile')
 
+    bike = Bike.objects.get(id=reservation.bike.id)
+    bike.in_stock = True
     reservation.delete()
     messages.success(request, 'The reservation was successfully canceled.')
     return redirect('profile')
