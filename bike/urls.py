@@ -21,7 +21,7 @@ urlpatterns = [
     path('worker/invoice_management/worker_pay_invoice/<int:invoice_id>', views.worker_pay_invoice, name='worker_pay_invoice'),
     path('worker/invoice_management/cancel_invoice/<int:invoice_id>', views.cancel_invoice, name='cancel_invoice'),
     path('worker/invoice_management/delete_invoice/<int:invoice_id>', views.delete_invoice, name='delete_invoice'),
-    path('worker/reservations', views.reservations_request, name='reservations'),
+    path('worker/reservations', views.all_reservations_request, name='all_reservations'),
 
     # worker's account management
     path('deactivate-user/<int:user_id>/', views.deactivate_user, name='deactivate_user'),
@@ -39,6 +39,9 @@ urlpatterns = [
     path('reservation/<uuid:pk>/summary/', views.ReservationSummaryView.as_view(), name='reservation_summary'),
     path('reservation/<uuid:reservation_id>/credit_payment/', views.make_credit_payment, name='make_credit_payment'),
     path('reservation/<uuid:reservation_id>/card_payment/', views.make_card_payment, name='make_card_payment'),
+    path('reservations/', views.my_reservations_request, name='my_reservations'),
+    path('reservations/<uuid:reservation_id>', views.reservation_detail, name='reservation_detail'),
+    path('reservations/cancel/<uuid:reservation_id>', views.cancel_reservation_request, name='cancel_reservation'),
     path('payment/', views.payment, name='payment'),
     path('complaints/', views.complaints_request, name='complaints'),
     path('complaints/<uuid:complaint_id>/', views.complaint_request, name='complaint'),

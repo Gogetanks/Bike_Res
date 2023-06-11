@@ -182,7 +182,7 @@ def worker_pay_invoice(request, invoice_id):
             invoice.status = InvoiceStatus.PAID.name
             invoice.paid_on = now()
             invoice.save()
-            if "TopUP" in invoice.comment:
+            if "TopUp" in invoice.comment:
                 user = User.objects.get(id=invoice.user.id)
                 user.credit += invoice.amount
                 user.save()
@@ -266,13 +266,6 @@ def delete_user(request, user_id):
         user.delete()
     return redirect('account_management')
 
-def reservations_request(request):
-    if not get_worker(request):
-        return redirect('login')
-
-    reservations = Reservation.objects.all()
-    return render(request, 'worker/reservations.html', {'reservations': reservations})
-
 # ----- #
 # ABOUT #
 # ----- #
@@ -322,10 +315,69 @@ def search(request):
 # ----------- #
 # RESERVATION #
 # ----------- #
+def all_reservations_request(request):
+    if not get_worker(request):
+        return redirect('login')
 
+    return render(request, 'reservations/reservations.html', {
+        'reservations': Reservation.objects.all(),
+        'title': 'All Reservations'
+    })
+
+def my_reservations_request(request):
+    user = get_user(request)
+    if not user:
+        return redirect('login')
+
+    return render(request, 'reservations/reservations.html', {
+        'reservations': Reservation.objects.filter(user=user),
+        'title': 'My Reservations'
+    })
+
+def reservation_detail(request, reservation_id):
+    user = get_user(request)
+    if not user:
+        return redirect('login')
+
+    if not Reservation.objects.filter(id=reservation_id).exists():
+        messages.error(request, 'Invalid reservation ID')
+        return redirect('profile')
+
+    reservation = Reservation.objects.get(id=reservation_id)
+    if user != reservation.user and not user.is_worker():
+        messages.error(request, 'You are not authorized to perform this action')
+        return redirect('profile')
+
+    duration = (reservation.endDate - reservation.requestDate).days
+    total_price = duration * reservation.bike.price
+
+    return render(request, 'reservations/reservation_detail.html', {
+        'reservation': reservation,
+        'bike': reservation.bike,
+        'user': reservation.user,
+        'total_price': total_price
+    })
+
+def cancel_reservation_request(request, reservation_id):
+    user = get_user(request)
+    if not user:
+        return redirect('login')
+
+    if not Reservation.objects.filter(id=reservation_id).exists():
+        messages.error(request, 'Invalid reservation ID')
+        return redirect('profile')
+
+    reservation = Reservation.objects.get(id=reservation_id)
+    if user != reservation.user and not user.is_worker():
+        messages.error(request, 'You are not authorized to perform this action')
+        return redirect('profile')
+
+    reservation.delete()
+    messages.success(request, 'The reservation was successfully canceled.')
+    return redirect('profile')
 
 class ReserveBikeView(FormView):
-    template_name = 'reservation.html'
+    template_name = 'reservations/reservation.html'
     model = Reservation
     form_class = ReservationForm
     success_url = reverse_lazy('home')
@@ -360,7 +412,7 @@ class ReserveBikeView(FormView):
 
 class ReservationSummaryView(DetailView):
     model = Reservation
-    template_name = 'reservation_summary.html'
+    template_name = 'reservations/reservation_summary.html'
     context_object_name = 'reservation'
 
     def get_context_data(self, **kwargs):
