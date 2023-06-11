@@ -398,7 +398,7 @@ class ReserveBikeView(FormView):
         reservation.save()
         form.save_m2m()
         bike = form.cleaned_data['bike']
-        bike.available = False
+        bike.in_stock = False
         bike.save()
         # Calculate the total price
         start_date = reservation.requestDate

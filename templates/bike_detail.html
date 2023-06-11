@@ -110,7 +110,9 @@ map.setView(new L.LatLng(locationLatitude, locationLongitude), 9);
 initmap();
 </script>
 
+    {% if bike.in_stock %}
     <form action="{% url 'reserve' bike_id=bike.id %}">
-                <button type="submit" class="btn btn-primary mt-4 btn-block">Reserve</button>
-            </form>
+        <button type="submit" class="btn btn-primary mt-4 btn-block">Reserve</button>
+    </form>
+    {% endif %}
 {% endblock %}
