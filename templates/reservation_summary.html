@@ -26,7 +26,9 @@
 
    <div class="payment-options">
   <p>Select Payment Method:</p>
-  <a class="btn btn-primary" href="{% url 'make_credit_payment' reservation_id=reservation.id %}">Card</a>
-</div>
+       <a class="btn btn-primary" href="{% url 'make_credit_payment' reservation_id=reservation.id %}">in Store Credit</a>
+       <a class="btn btn-primary" href="{% url 'make_card_payment' reservation_id=reservation.id %}">Card Payment</a>
+   </div>
+
 
 {% endblock %}

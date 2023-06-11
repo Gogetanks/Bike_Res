@@ -182,9 +182,19 @@ def worker_pay_invoice(request, invoice_id):
             invoice.status = InvoiceStatus.PAID.name
             invoice.paid_on = now()
             invoice.save()
-            user = User.objects.get(id=invoice.user.id)
-            user.credit += invoice.amount
-            user.save()
+            if "TopUP" in invoice.comment:
+                user = User.objects.get(id=invoice.user.id)
+                user.credit += invoice.amount
+                user.save()
+            if "Reservation" in invoice.comment:
+                start_index = invoice.comment.find("Reservation ID:") + len("Reservation ID:")
+                end_index = invoice.comment.find(",", start_index)
+                reservation_id = invoice.comment[start_index:end_index].strip()
+                reservation = get_object_or_404(Reservation, id=reservation_id)
+                reservation.status = ReservationStatus.FINISHED.name
+                reservation.save()
+                messages.success(request, 'Reservation payment successful with store credit.')
+
         else:
             messages.error(request, 'You are only allowed to pay an UNEXPIRED invoice with status UNPAID')
         return redirect('invoice_management')
@@ -526,6 +536,28 @@ def make_credit_payment(request, reservation_id):
                 reservation.delete()
                 messages.error(request, 'Insufficient store credit. Please choose another payment method.')
                 return redirect('topup_account')
+
+    return redirect('profile')
+
+def make_card_payment(request, reservation_id):
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    reservation = get_object_or_404(Reservation, id=reservation_id)
+    user = get_user(request)
+    duration = (reservation.endDate - reservation.requestDate).days
+    total_price = duration * reservation.bike.price
+
+    if reservation.user == user:
+        use_store_credit = request.POST.get('use_store_credit', False)
+
+        if not use_store_credit:
+            # Generate the invoice
+            invoice = Invoice()
+            invoice.user = user
+            invoice.comment = 'Reservation ID: {id}, Bike: {bike}'.format(id=reservation.id, bike=reservation.bike.name)
+            invoice.save()
+            return redirect('invoice', invoice.id)
 
     return redirect('profile')
 
