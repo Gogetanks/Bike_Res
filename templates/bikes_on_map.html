@@ -24,14 +24,21 @@
 
     
     var bikes = [
-      {% for bike in bikes %}
-        { name: '{{ bike.name }}', latitude: '{{ bike.latitude }}', longitude: '{{ bike.longitude }}' },
-      {% endfor %}
+        {% for bike in bikes %}
+        {
+            name: '{{ bike.name }}',
+            latitude: '{{ bike.latitude }}',
+            longitude: '{{ bike.longitude }}',
+            url: '{% url "bike_detail" slug=bike.slug %}'
+        },
+        {% endfor %}
     ];
 
-    bikes.forEach(function(bike) {
-      L.marker([bike.latitude, bike.longitude]).addTo(map).bindPopup(bike.name);
+      bikes.forEach(function(bike) {
+        var popupContent = '<a href="' + bike.url + '">' + bike.name + '</a>';
+        L.marker([bike.latitude, bike.longitude]).addTo(map).bindPopup(popupContent);
     });
+
   };
 </script>
 <script>
