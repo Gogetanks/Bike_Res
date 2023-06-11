@@ -34,6 +34,7 @@ urlpatterns = [
     path('categories/', views.category_list, name='category_list'),
     path('categories/<str:slug>/', views.category_detail, name='category_detail'),
     path('search/', views.search, name='search'),
+    path('bikemap/', views.bikemap, name='bikemap'),
 
     path('reserve/<uuid:bike_id>', views.ReserveBikeView.as_view(), name='reserve'),
     path('reservation/<uuid:pk>/summary/', views.ReservationSummaryView.as_view(), name='reservation_summary'),

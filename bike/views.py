@@ -51,6 +51,8 @@ def home_request(request):
     context = {'featured_bikes': featured_bikes}
     return render(request, 'home.html', context)
 
+def bikemap(request):
+    return render(request, 'bikes_on_map.html', {'bikes': Bike.objects.filter(in_stock=True)})
 
 # ------- #
 # PROFILE #

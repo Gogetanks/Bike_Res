@@ -76,9 +76,14 @@
 						My Profile
 						</a></li>
 					{% endif %}
+					
 					<!--Create similar navigation bar items when adding new page templates-->
 					<li><a href="{% url 'bike_list' %}">Bikes</a></li>
 					<li><a href="{% url 'category_list' %}">Categories</a></li>
+					<li><a href="{% url 'bikemap' %}"
+						class="{% if request.resolver_match.url_name == 'bikemap' %}active{% else %}none{% endif %}">
+						Bikes on map
+						</a></li>
                     <li><form method="get" action="{% url 'search' %}">
                             <input type="search" placeholder="Search" aria-label="Search" name="q">
                </form></li>
