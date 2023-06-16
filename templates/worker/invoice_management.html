@@ -29,7 +29,7 @@
                             <td>{{ invoice.user }}</td>
                             <td>{{ invoice.created_on|date:"d/m/Y H:i" }}</td>
                             <td>{{ invoice.due_date|date:"d/m/Y H:i" }}</td>
-                            <td>{{ invoice.amount }} PLN</td>
+                            <td>${{ invoice.amount }} </td>
                             <td>{{ invoice.comment }}</td>
                             <td>{{ invoice.status }}</td>
                             <td>
