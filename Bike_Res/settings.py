@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django_flatpickr',
     'django_crontab',
     'bike.apps.BikeConfig',
+#    'payment.apps.PaymentConfig'
 ]
 
 MIDDLEWARE = [
@@ -157,3 +158,8 @@ CRONJOBS = [
     ('0 3 * * *', 'bike.cron.close_complaints'),
     ('0 3 * * *', 'bike.cron.remove_complaints')
 ]
+
+# Stpire payment service keys
+STRIPE_PUBLISHABLE_KEY = 'pk_test_51MxqGRGhtiY44XHG5MiwIupZaxEbeXYZ5ZuziHERQr3Oiblz6iHOPAJMFfuDwajcYw1Nv9b93EzXQr0QyrQKtBJ200a9BY2m3N'
+STRIPE_SECRET_KEY = 'sk_test_51MxqGRGhtiY44XHG0BH1TWtW47ksMMPVCSU3ydm0xAI9sVyFTmCtmo0mJY4qsDMxxluWck6EZmEqmmA6WuVAAwQr00HlLXbdKT'
+
