@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+	<div class="col-md-10">
+<h1>{{ title }}</h1>
+<div class="table-responsive">
+<table class="table table-striped table-hover">
+	<thead class="bg-primary text-white">
+	<tr>
+		<th>#</th>
+		<th>Bike</th>
+		<th>Request Date</th>
+		<th>End Date</th>
+		<th>Status</th>
+		<th>Actions</th>
+	</tr>
+  	</thead>
+  	<tbody>
+  	{% for reservation in reservations %}
+		<tr>
+			<td>{{ forloop.counter }}</td>
+			<td> <a href="/bikes/{{ reservation.bike.slug }}/status/">{{ reservation.bike.name }}</a></td>
+        	<td>{{ reservation.requestDate }}</td>
+	  		<td>{{ reservation.endDate }}</td>
+	  		<td>{{ reservation.status }}</td>
+			<td>
+				<a href="{% url 'cancel_reservation' reservation.id %}"
+				   class="btn btn-danger {% if reservation.status != 'PENDING' %}disabled{% endif %} mx-2 rounded"
+				   onclick="return confirm('Are you sure you want to cancel this reservation?')">
+					Cancel</a>
+				<a href="{% url 'reservation_detail' reservation.id %}" class="btn btn-primary">
+					Details</a>
+			</td>
+		</tr>
+	{% endfor %}
+  	</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+{% endblock %}

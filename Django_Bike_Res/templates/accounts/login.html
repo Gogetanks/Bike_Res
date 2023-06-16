@@ -1,0 +1,13 @@
+{% extends "accounts/account_form.html" %}
+
+{% block form-title %}
+	Enter your credentials:
+{% endblock %}
+
+{% block submit-value %}
+	Enter
+{% endblock %}
+
+{% block form-extra %}
+	<div><a href="{% url 'register' %}">Not registered yet?</a></div>
+{% endblock %}

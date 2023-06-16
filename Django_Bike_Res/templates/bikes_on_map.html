@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block styles %}
+
+{% endblock %}
+{% block content %}
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+<div id="map" style="height: 400px;"></div>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script>
+  function initMap() {
+    // Create a map centered at a specific location
+    var map = L.map('map').setView([52.2297, 21.0122], 10);
+
+
+    // Add the OpenStreetMap tile layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
+      maxZoom: 18
+    }).addTo(map);
+
+    
+    var bikes = [
+        {% for bike in bikes %}
+        {
+            name: '{{ bike.name }}',
+            latitude: '{{ bike.latitude }}',
+            longitude: '{{ bike.longitude }}',
+            url: '{% url "bike_detail" slug=bike.slug %}'
+        },
+        {% endfor %}
+    ];
+
+      bikes.forEach(function(bike) {
+        var popupContent = '<a href="' + bike.url + '">' + bike.name + '</a>';
+        L.marker([bike.latitude, bike.longitude]).addTo(map).bindPopup(popupContent);
+    });
+
+  };
+</script>
+<script>
+    window.onload = function () {
+      initMap();
+    };
+  </script>
+{% endblock %}

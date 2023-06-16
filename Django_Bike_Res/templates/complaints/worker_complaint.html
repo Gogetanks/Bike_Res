@@ -1,0 +1,20 @@
+{% extends 'complaints/base_complaint.html' %}
+
+{% block complaint-extra %}
+	{% if not complaint.mechanic %}
+		<form method="post">
+			{% csrf_token %}
+			<hr/>
+			<h5>Add a mechanic to the chat:</h5>
+			<select name="newMechanic" class="form-select mb-2 w-25" aria-label=".form-select-lg example">
+				{% for mechanic in mechanics %}
+					<option value="{{ mechanic.id }}">{{ mechanic.username }}</option>
+				{% endfor %}
+			</select>
+			<input type="submit" class="btn btn-info mb-3" value="Add"/>
+		</form>
+	{% endif %}
+	{% if complaint.status == 'OPENED' %}
+		<a href="{% url 'solve_complaint' complaint.id %}" class="btn btn-success mb-3" onclick="return confirm('Are you sure you want to mark this complaint as SOLVED?')">Mark as SOLVED</a>
+	{% endif %}
+{% endblock %}

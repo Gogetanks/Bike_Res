@@ -1,0 +1,13 @@
+{% extends "accounts/account_form.html" %}
+
+{% block form-title %}
+	Please provide details about your complaint:
+{% endblock %}
+
+{% block submit-value %}
+	Enter
+{% endblock %}
+
+{% block form-extra %}
+	<div><a href="{% url 'complaints' %}">Go back to my complaints</a></div>
+{% endblock %}
