@@ -1,0 +1,68 @@
+#!/bin/sh
+
+PIDFILE="/var/run/webapi.pid"
+TIMEOUT=5
+N=10
+
+start() {
+	echo "Starting webapi..."
+	cd /webapi
+
+	i=1
+	while [ "$i" -le $N ];
+	do
+        	if /sbin/ip a | grep -Eq ': tun0:.*UP'; then
+                	break
+        	else
+                	echo "tunnel does not exist"
+			if [[ $i -eq $N ]]; then
+				echo "FAIL"
+				return 1
+			fi
+                	echo "sleep for" $TIMEOUT "seconds"
+			sleep $TIMEOUT
+        	fi
+		i=$(( i + 1 ))
+	done
+
+	start-stop-daemon -b -S -q -m -p "$PIDFILE" \
+                --exec /usr/bin/python /webapi/webapi.py
+	status=$?
+	if [ "$status" -eq 0 ]; then
+		echo "OK"
+	else
+		echo "FAIL"
+	fi
+	return "$status"
+}
+
+stop() {
+	printf "Stopping webapi: "
+	start-stop-daemon -K -q -p "$PIDFILE"
+	status=$?                              
+	if [ "$status" -eq 0 ]; then
+		rm -f "$PIDFILE"    
+		echo "OK"           
+	else                    
+		echo "FAIL"
+	fi                 
+	return "$status"   
+} 
+
+case "$1" in
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart|reload)
+		stop
+		sleep 1
+		start
+		;;
+	*)
+		echo "Usage: $0 {start|stop|restart}"
+		exit 1
+esac
+
