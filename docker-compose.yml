@@ -1,0 +1,35 @@
+version: '3'
+services:
+  db:
+    image: mariadb
+    ports:
+      - "3306:3306"
+    restart: always
+    environment:
+      - MARIADB_ROOT_PASSWORD=2NOOe5vz3HB3
+      - MARIADB_DATABASE=bike
+      - MARIADB_USER=bike
+      - MARIADB_PASSWORD=Quyz8xIF1B
+
+  web:
+    build: .
+    # command:
+    #   - /bin/sh
+    #   - '-c'
+    #   - '/scripts/entrypoint.sh'
+    #command: python manage.py runserver 0.0.0.0:8000
+    command: 
+        - /bin/sh 
+        - -c 
+        - |
+                cron
+                python manage.py runserver 0.0.0.0:8000
+    ports:
+      - "80:8000"
+    volumes:
+      - ./Bike_Res:/app
+      - /tmp/app/mysqld:/run/mysqld
+    depends_on:
+     - db
+    security_opt:
+      - label=type:container_runtime_t
