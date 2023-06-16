@@ -37,6 +37,18 @@
 				   class="btn btn-danger {% if reservation.status != 'PENDING' %}disabled{% endif %} mt-3 rounded"
 				   onclick="return confirm('Are you sure you want to cancel this reservation?')">
 			Cancel</a>
+        {% if reservation.status == 'PENDING' %}
+        <a href="{% url 'make_credit_payment' reservation_id=reservation.id %}"
+				   class="btn btn-primary mt-3 rounded">
+			Pay with credits</a>
+        <a href="{% url 'make_card_payment' reservation_id=reservation.id %}"
+				   class="btn btn-primary mt-3 rounded">
+			Pay by card</a>
+        {% endif %}
+        
+        <a href="/bikes/{{ reservation.bike.slug }}/status/" class="btn btn-primary mt-3 rounded">Bike status</a>
+
+
 	<hr/>
     <div class="row justify-content-center mt-5 w-75 m-auto">
         <div class="col-md-6">

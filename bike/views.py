@@ -13,6 +13,8 @@ from .models import User, Complaint, Comment, Bike, Category, Invoice, Reservati
 from django.utils.timezone import now
 from decimal import Decimal
 
+from django.core.management import call_command
+
 # ----- #
 # UTILS #
 # ----- #
@@ -290,6 +292,49 @@ def bike_detail(request, slug):
     bike = get_object_or_404(Bike, slug=slug)
     return render(request, 'bike_detail.html', {'bike': bike})
 
+def bike_status(request, slug):
+    bike = get_object_or_404(Bike, slug=slug)
+#    try:
+#        call_command('lock', bike.name)
+#    except Exception as e:
+#        print("Error occured", str(e))
+    return render(request, 'bike_status.html', {'bike': bike})
+
+def bike_lock(request, slug):
+    user = get_user(request)
+    if not user:
+        return redirect('login')
+    bike = get_object_or_404(Bike, slug=slug)
+    res = Reservation.objects.filter(user=user)
+
+    if user.is_worker() or user.is_mechanic() or res:
+        try:
+            call_command('lock', bike.name)
+            messages.success(request, 'Bike is locked')
+        except Exception as e:
+            print("Error occured", str(e))
+            messages.error(request, 'Bike is still unlocked')
+        return redirect('bike_status', slug=slug )
+    else:
+        return redirect('profile')
+
+def bike_unlock(request, slug):
+    user = get_user(request)
+    if not user:
+        return redirect('login')
+    bike = get_object_or_404(Bike, slug=slug)
+    res = Reservation.objects.filter(user=user)
+    if user.is_worker() or user.is_mechanic() or res:
+        try:
+            call_command('unlock', bike.name)
+            messages.success(request, 'Bike is unlocked')
+        except Exception as e:
+            print("Error occured", str(e))
+            messages.error(request, 'Bike is still locked')
+        return redirect('bike_status', slug=slug )
+    else:
+        return redirect('profile')
+
 
 def category_list(request):
     categories = Category.objects.all()
@@ -301,7 +346,15 @@ def category_detail(request, slug):
     bikes = Bike.objects.filter(category=category)
     return render(request, 'category_detail.html', {'bikes': bikes})
 
+# ----------------------#
+#  BIKES' STATUSES      #
+# --------------------- #
 
+def if_bike_online(request, bike_name):
+    bike = Bike.objects.get(name=bike_name)
+    return render(request, 'bike_status.html', {'bike': bike})
+
+ 
 # ------ #
 # SEARCH #
 # ------ #
@@ -581,7 +634,7 @@ def make_credit_payment(request, reservation_id):
         if use_store_credit:
             if user.credit >= total_price:
                 # Deduct the price from the user's store credit
-                user.credit -= reservation.bike.price
+                user.credit -= total_price
                 user.save()
                 # Update the reservation status as paid
                 reservation.status = ReservationStatus.FINISHED.name
@@ -612,6 +665,7 @@ def make_card_payment(request, reservation_id):
             invoice = Invoice()
             invoice.user = user
             invoice.comment = 'Reservation ID: {id}, Bike: {bike}'.format(id=reservation.id, bike=reservation.bike.name)
+            invoice.amount = total_price
             invoice.save()
             return redirect('invoice', invoice.id)
 

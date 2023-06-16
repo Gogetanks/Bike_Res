@@ -53,7 +53,9 @@ class Bike(models.Model):
     ip_address = models.GenericIPAddressField(protocol='IPv4', null=True, blank=True)
     latitude = models.FloatField(null=False, blank=False)  # pos[0], float
     longitude = models.FloatField(null=False, blank=False)  # pos[1], float
-
+    is_online = models.BooleanField(default = False, null = False, blank = False)
+    is_locked = models.BooleanField(null = True, blank = True)
+ 
     def __str__(self):
         return self.name
 

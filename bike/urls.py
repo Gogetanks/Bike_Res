@@ -31,6 +31,10 @@ urlpatterns = [
     path('about/', views.about, name='about'),
     path('bikes/', views.bike_list, name='bike_list'),
     path('bikes/<str:slug>/', views.bike_detail, name='bike_detail'),
+    path('bikes/<str:slug>/status/', views.bike_status, name='bike_status'),
+    path('bikes/<str:slug>/lock/', views.bike_lock, name='bike_lock'),
+    path('bikes/<str:slug>/unlock/', views.bike_unlock, name='bike_unlock'),
+
     path('categories/', views.category_list, name='category_list'),
     path('categories/<str:slug>/', views.category_detail, name='category_detail'),
     path('search/', views.search, name='search'),

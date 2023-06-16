@@ -15,7 +15,7 @@
             
             <div>Due date: {{ invoice.due_date|date:"d/m/Y H:i" }}</div>
             
-            <div>Amount: {{ invoice.amount }} PLN</div>
+            <div>Amount: ${{ invoice.amount }}</div>
             
             {% if invoice.status %}
             <div>Status: {{ invoice.status }}</div>

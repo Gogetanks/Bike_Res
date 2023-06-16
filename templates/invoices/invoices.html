@@ -23,7 +23,7 @@
                                 <td><a href={% url 'invoice' invoice.id %}>invoice #{{ invoice.id }}</a></td>
                                 <td>{{ invoice.created_on|date:"d/m/Y H:i" }}</td>
                                 <td>{{ invoice.due_date|date:"d/m/Y H:i" }}</td>
-                                <td>{{ invoice.amount }} PLN</td>
+                                <td>${{ invoice.amount }}</td>
                                 <td>{{ invoice.status }}</td>
                                 <td>
                                     <div class="btn-group" role="group" aria-label="Invoice Actions">

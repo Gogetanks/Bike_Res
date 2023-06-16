@@ -21,7 +21,7 @@
   	{% for reservation in reservations %}
 		<tr>
 			<td>{{ forloop.counter }}</td>
-			<td>{{ reservation.bike.name }}W</td>
+			<td> <a href="/bikes/{{ reservation.bike.slug }}/status/">{{ reservation.bike.name }}</a></td>
         	<td>{{ reservation.requestDate }}</td>
 	  		<td>{{ reservation.endDate }}</td>
 	  		<td>{{ reservation.status }}</td>
