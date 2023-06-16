@@ -24,8 +24,7 @@ RUN apt-get -y install nano
 RUN apt-get -y install cron
 # Add the cron job
 RUN crontab -l | { cat; echo "* * * * * python /app/manage.py getlocation"; } | crontab -
-RUN crontab -l | { cat; echo "* * * * * echo \"Hello\" >> /app/hello.log"; } | crontab -
-
+RUN crontab -l | { cat; echo "* * * * * python /app/manage.py getstatus"; } | crontab -
 
 ADD Bike_Res /app
 # COPY . /app
